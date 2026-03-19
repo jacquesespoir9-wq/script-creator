@@ -4,7 +4,17 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
-import { AlertCircle, Check, Copy, Sparkles, Image as ImageIcon, RefreshCw, X } from 'lucide-react';
+import { 
+  AlertCircle, Check, Copy, Sparkles, Image as ImageIcon, 
+  RefreshCw, X, Instagram, Music2, Youtube, Facebook 
+} from 'lucide-react';
+
+const IconMap = {
+  Instagram,
+  Music2,
+  Youtube,
+  Facebook
+};
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -113,6 +123,7 @@ Structure : ACCROCHE CHOC, ÉTAPES CLÉS, CTA et HASHTAGS.`;
   };
 
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
+  const SelectedIcon = selectedPlatform ? IconMap[selectedPlatform.iconName] : Sparkles;
 
   return (
     <div className="max-w-6xl mx-auto px-6 pb-20">
@@ -144,13 +155,16 @@ Structure : ACCROCHE CHOC, ÉTAPES CLÉS, CTA et HASHTAGS.`;
             <div>
               <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[2px] mb-4">2. Configuration</h3>
               <div className="grid grid-cols-2 gap-2">
-                {PLATFORMS.map((p) => (
-                  <button key={p.id} onClick={() => navigate(`/${p.id}`)} 
-                    className={`flex items-center gap-2 p-3 rounded-xl text-xs font-bold transition-all ${platform === p.id ? 'bg-white/10 ring-1 ring-inset ring-white/20' : 'bg-white/[0.02] text-gray-500 hover:bg-white/5'}`}
-                    style={{ color: platform === p.id ? p.color : '' }}>
-                    <span className="text-lg">{p.icon}</span> {p.label.split(' ')[0]}
-                  </button>
-                ))}
+                {PLATFORMS.map((p) => {
+                  const Icon = IconMap[p.iconName];
+                  return (
+                    <button key={p.id} onClick={() => navigate(`/${p.id}`)} 
+                      className={`flex items-center gap-2 p-3 rounded-xl text-xs font-bold transition-all ${platform === p.id ? 'bg-white/10 ring-1 ring-inset ring-white/20' : 'bg-white/[0.02] text-gray-500 hover:bg-white/5'}`}
+                      style={{ color: platform === p.id ? p.color : '' }}>
+                      <Icon size={16} /> {p.label.split(' ')[0]}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
@@ -218,7 +232,7 @@ Structure : ACCROCHE CHOC, ÉTAPES CLÉS, CTA et HASHTAGS.`;
                 <div className="flex items-center justify-between border-b border-white/5 pb-6">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: selectedPlatform?.color + '20', color: selectedPlatform?.color }}>
-                      {selectedPlatform?.icon}
+                      <SelectedIcon size={24} />
                     </div>
                     <div>
                       <h2 className="font-bold text-lg">{selectedPlatform?.label}</h2>
