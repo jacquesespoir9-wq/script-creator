@@ -95,13 +95,26 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
         }),
       });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData?.error?.message || `Erreur (Code ${response.status})`;
+        
+        if (response.status === 401) throw new Error("Clé API invalide. Vérifie ta clé OpenRouter.");
+        if (response.status === 402) throw new Error("Crédits insuffisants sur ton compte OpenRouter.");
+        if (response.status === 429) throw new Error("Trop de requêtes. Attends un instant.");
+        
+        throw new Error(errorMessage);
+      }
+
       const data = await response.json();
       const text = data.choices?.[0]?.message?.content || "";
-      if (!text) throw new Error("Réponse vide de l'API. (Vérifiez votre clé API OpenRouter)");
+      if (!text) throw new Error("Réponse vide de l'API. (Vérifiez le modèle sélectionné)");
       setScript(text);
     } catch (error) {
-      console.error(error);
-      setError("Erreur lors de la génération. Vérifie ta connexion et réessaie.");
+      console.error("Détails de l'erreur:", error);
+      setError(error.message.includes("fetch") || error.message.includes("Network") 
+        ? "Problème de connexion internet. Vérifie ton réseau." 
+        : error.message);
     } finally {
       setLoading(false);
     }
