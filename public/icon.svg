@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0D0D0F" rx="100"/>
+  <rect x="128" y="128" width="256" height="256" stroke="#C8FF57" stroke-width="24" fill="none" rx="40"/>
+  <text x="256" y="272" font-family="sans-serif" font-weight="bold" font-size="120" fill="#C8FF57" text-anchor="middle" dominant-baseline="middle">S</text>
+  <text x="256" y="380" font-family="sans-serif" font-weight="bold" font-size="60" fill="#C8FF57" text-anchor="middle" dominant-baseline="middle">GEN</text>
+</svg>
