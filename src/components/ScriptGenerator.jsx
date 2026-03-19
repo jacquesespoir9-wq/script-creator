@@ -1,18 +1,22 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../supabaseClient';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ScriptGenerator = ({ initialPlatformId }) => {
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
-  const [platform, setPlatform] = useState(initialPlatformId);
   const [duration, setDuration] = useState("60");
   const [tone, setTone] = useState("educational");
   const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // On utilise l'ID de la plateforme provenant de l'URL comme source de vérité
+  const platform = initialPlatformId;
 
   const handleFile = useCallback((file) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -28,6 +32,11 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     };
     reader.readAsDataURL(file);
   }, []);
+
+  const changePlatform = (id) => {
+    // Change l'URL, ce qui déclenchera la mise à jour du titre dans PlatformPage
+    navigate(`/${id}`);
+  };
 
   const generateScript = async () => {
     if (!imageBase64) return;
@@ -198,7 +207,7 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
               <label style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 12 }}>2. Plateforme</label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {PLATFORMS.map((p) => (
-                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-platform' : ''}`} onClick={() => setPlatform(p.id)}
+                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-platform' : ''}`} onClick={() => changePlatform(p.id)}
                     style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
                     <span style={{ fontSize: 18 }}>{p.icon}</span>
                     {p.label.split(' ')[0]}
