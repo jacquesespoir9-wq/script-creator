@@ -45,37 +45,47 @@ const HistoryPage = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "20px 24px" }}>
       <BackButton />
-      <div className="text-center mb-12 slide-up">
-        <h1 className="text-4xl font-bold mb-4 font-outfit">Historique des <span className="text-[#C8FF57]">Scripts</span></h1>
-        <p className="text-gray-400">Retrouvez toutes vos créations passées.</p>
+      
+      <div className="slide-up" style={{ textAlign: 'center', marginBottom: 56, marginTop: 40 }}>
+        <h1 style={{ 
+          fontFamily: "'Outfit', sans-serif", 
+          fontSize: "clamp(32px, 8vw, 48px)", 
+          marginBottom: 16, 
+          fontWeight: 800 
+        }}>
+          Votre <span style={{ color: "#C8FF57" }}>Historique</span>
+        </h1>
+        <p style={{ color: "#888", fontSize: 18, maxWidth: 600, margin: "0 auto" }}>
+          Retrouvez et réutilisez tous les scripts que vous avez générés précédemment.
+        </p>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="animate-spin-slow w-12 h-12 border-4 border-[#C8FF57]/10 border-top-[#C8FF57] rounded-full"></div>
+          <div className="animate-spin-slow w-12 h-12 border-4 border-[#C8FF57]/10 border-t-[#C8FF57] rounded-full"></div>
         </div>
       ) : scripts.length === 0 ? (
-        <div className="text-center py-20 glass-panel rounded-3xl">
-          <div className="text-5xl mb-4">📭</div>
-          <p className="text-gray-500">Aucun script enregistré pour le moment.</p>
+        <div className="glass-panel rounded-[32px] py-20 text-center slide-up">
+          <div className="text-6xl mb-6 opacity-20">📭</div>
+          <p className="text-gray-500 font-medium">Aucun script enregistré pour le moment.</p>
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid gap-6 slide-up">
           {scripts.map((script) => {
             const platform = PLATFORMS.find(p => p.label === script.platform) || PLATFORMS[0];
             const Icon = IconMap[platform.iconName];
             return (
-              <div key={script.id} className="glass-panel rounded-3xl p-6 slide-up">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: platform.color + '22', color: platform.color }}>
-                      <Icon size={20} />
+              <div key={script.id} className="glass-panel rounded-[32px] p-8 border-white/5 hover:border-white/10 transition-all">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ background: platform.color + '15', color: platform.color }}>
+                      <Icon size={24} />
                     </div>
                     <div>
-                      <h3 className="font-bold font-outfit">{script.platform}</h3>
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <h3 className="font-bold font-outfit text-lg">{script.platform}</h3>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 font-medium">
                         <Clock size={12} />
                         {new Date(script.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                       </div>
@@ -84,26 +94,26 @@ const HistoryPage = () => {
                   <div className="flex gap-2">
                     <button 
                       onClick={() => copyToClipboard(script.content, script.id)}
-                      className="p-2 rounded-lg hover:bg-white/5 transition-colors text-gray-400 hover:text-[#C8FF57]"
+                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-gray-400 hover:text-[#C8FF57]"
                     >
-                      {copiedId === script.id ? <Check size={18} /> : <Copy size={18} />}
+                      {copiedId === script.id ? <Check size={20} /> : <Copy size={20} />}
                     </button>
                     <button 
                       onClick={() => deleteScript(script.id)}
-                      className="p-2 rounded-lg hover:bg-red-500/10 transition-colors text-gray-400 hover:text-red-500"
+                      className="p-3 rounded-xl bg-red-500/5 hover:bg-red-500/10 transition-all text-gray-400 hover:text-red-500"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 </div>
-                <div className="text-sm text-gray-400 line-clamp-3 whitespace-pre-wrap mb-4">
+                <div className="text-gray-400 text-sm leading-relaxed whitespace-pre-wrap mb-6 line-clamp-4 font-medium">
                   {script.content}
                 </div>
-                <div className="flex gap-2">
-                  <span className="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                <div className="flex gap-3">
+                  <span className="px-4 py-1.5 rounded-full bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-500">
                     {script.duration}s
                   </span>
-                  <span className="px-3 py-1 rounded-full bg-white/5 text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  <span className="px-4 py-1.5 rounded-full bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-500">
                     Ton {script.tone}
                   </span>
                 </div>
