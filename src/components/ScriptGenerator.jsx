@@ -47,7 +47,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
     if (!API_KEY || API_KEY === "") {
-      setError("Clé API manquante. Ajoutez 'VITE_OPENROUTER_API_KEY' dans les Secrets et cliquez sur REBUILD.");
+      setError("ERREUR : La clé API n'est pas détectée dans cette version de l'app. Action requise : Ajoutez 'VITE_OPENROUTER_API_KEY' dans les Secrets ET cliquez sur le bouton REBUILD en haut du chat.");
       return;
     }
 
