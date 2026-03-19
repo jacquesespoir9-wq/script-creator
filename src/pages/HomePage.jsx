@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS } from '../constants';
+import PlatformIcon from '../components/PlatformIcon';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -53,7 +54,6 @@ const HomePage = () => {
               }}
             >
               <div style={{ 
-                fontSize: 44, 
                 background: "rgba(255,255,255,0.03)", 
                 width: 80, 
                 height: 80, 
@@ -61,9 +61,10 @@ const HomePage = () => {
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                marginBottom: 8
+                marginBottom: 8,
+                color: p.color
               }}>
-                {p.icon}
+                <PlatformIcon id={p.id} size={40} color={p.id === 'tiktok' ? '#fff' : p.color} />
               </div>
               <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Outfit', sans-serif" }}>{p.label}</div>
               <div style={{ fontSize: 12, color: "#666", lineHeight: 1.5 }}>Contenu optimisé pour {p.label}</div>

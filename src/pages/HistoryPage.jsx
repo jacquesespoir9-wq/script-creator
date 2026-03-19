@@ -5,6 +5,7 @@ import { supabase } from '../integrations/supabase/client';
 import BackButton from '../components/BackButton';
 import { PLATFORMS } from '../constants';
 import { Trash2, Clock, Copy, Check } from 'lucide-react';
+import PlatformIcon from '../components/PlatformIcon';
 
 const HistoryPage = () => {
   const [scripts, setScripts] = useState([]);
@@ -62,8 +63,8 @@ const HistoryPage = () => {
               <div key={script.id} className="glass-panel rounded-3xl p-6 slide-up">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: platform.color + '22', color: platform.color }}>
-                      {platform.icon}
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: platform.color + '22', color: platform.color }}>
+                      <PlatformIcon id={platform.id} size={20} color={platform.id === 'tiktok' ? '#fff' : platform.color} />
                     </div>
                     <div>
                       <h3 className="font-bold font-outfit">{script.platform}</h3>

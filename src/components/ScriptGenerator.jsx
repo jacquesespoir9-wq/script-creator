@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
+import PlatformIcon from './PlatformIcon';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -167,7 +168,7 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
                 {PLATFORMS.map((p) => (
                   <button key={p.id} className={`option-btn ${platform === p.id ? 'active-platform' : ''}`} onClick={() => changePlatform(p.id)}
                     style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{p.icon}</span> {p.label.split(' ')[0]}
+                    <PlatformIcon id={p.id} size={16} color={platform === p.id ? (p.id === 'tiktok' ? '#fff' : p.color) : "#555"} /> {p.label.split(' ')[0]}
                   </button>
                 ))}
               </div>
@@ -227,7 +228,9 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
               <div className="slide-up">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: selectedPlatform?.color, display: "flex", alignItems: "center", justifyContent: "center" }}>{selectedPlatform?.icon}</div>
+                    <div style={{ width: 32, height: 32, borderRadius: 8, background: selectedPlatform?.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
+                      <PlatformIcon id={selectedPlatform?.id} size={18} color={selectedPlatform?.id === 'tiktok' ? '#fff' : '#fff'} />
+                    </div>
                     <div style={{ fontSize: 14, fontWeight: 700 }}>{selectedPlatform?.label}</div>
                   </div>
                   <button onClick={copyScript} style={{ padding: "8px 16px", borderRadius: 12, background: copied ? "#C8FF57" : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#F0EDE8", fontSize: 12, fontWeight: 700 }}>
