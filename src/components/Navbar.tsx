@@ -1,113 +1,115 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Zap, Sparkles, User, LogOut, Menu, X, Home } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Zap, Sparkles, Home, Menu, X } from 'lucide-react';
 import { PLATFORMS } from '../constants';
-import MobileMenu from './MobileMenu';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItemClasses = (path: string) => `
-    relative flex items-center gap-2 px-4 py-2 text-sm font-bold transition-all rounded-xl
+    relative flex items-center gap-2 px-4 py-2 text-[13px] font-bold transition-all duration-500 rounded-full whitespace-nowrap
     ${location.pathname === path 
-      ? 'bg-[#F9825A] text-white shadow-[0_0_15px_rgba(249,130,90,0.4)]' 
-      : 'text-gray-400 hover:text-white hover:bg-white/5'}
+      ? 'bg-white/15 text-white shadow-[0_8px_32px_rgba(255,255,255,0.1)]' 
+      : 'text-white/50 hover:text-white hover:bg-white/5'}
   `;
 
   return (
     <motion.header 
-      initial={{ y: -100, opacity: 0 }}
+      initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="fixed top-6 left-0 right-0 z-[100] w-full px-4"
+      className="fixed top-6 left-0 right-0 z-[100] w-full px-4 flex justify-center"
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-[2rem] border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-xl shadow-2xl">
+      {/* Main Liquid Container */}
+      <div className="relative flex items-center gap-8 px-6 py-2 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-b before:from-white/5 before:to-transparent before:pointer-events-none">
         
-        {/* Logo Section */}
+        {/* 1. Logo Section */}
         <div 
           onClick={() => navigate('/')}
           className="flex items-center gap-3 cursor-pointer group shrink-0"
         >
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#F9825A] to-[#2E3192] shadow-[0_0_20px_rgba(249,130,90,0.4)] transition-transform group-hover:scale-110">
-            <Zap size={20} className="text-white fill-white" />
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-[#F9825A] to-[#2E3192] p-[1px]">
+            <div className="flex h-full w-full items-center justify-center rounded-full bg-[#0D0D0F]">
+              <Zap size={16} className="text-[#F9825A] fill-[#F9825A]" />
+            </div>
+            <div className="absolute inset-0 rounded-full bg-[#F9825A]/20 blur-md animate-pulse" />
           </div>
           <div className="flex flex-col">
-            <span className="text-xl font-black tracking-tighter text-white leading-none">
-              SCRIPT<span className="text-[#F9825A]">GEN</span>
+            <span className="text-lg font-black tracking-tight text-white leading-none">
+              Script<span className="text-[#F9825A]">Gen</span>
             </span>
-            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mt-0.5">
+            <span className="text-[9px] font-bold text-white/30 uppercase tracking-[0.3em] mt-0.5">
               AI Studio
             </span>
           </div>
         </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 md:flex bg-black/20 p-1 rounded-2xl border border-white/5">
+        {/* 2. Navigation Links (Desktop) */}
+        <nav className="hidden md:flex items-center gap-1 bg-white/5 p-1 rounded-full border border-white/5">
           <button onClick={() => navigate('/')} className={navItemClasses('/')}>
-            <Home size={16} /> Accueil
+            <Home size={14} /> Accueil
           </button>
+          <div className="w-[1px] h-4 bg-white/10 mx-1" />
           {PLATFORMS.map((p) => (
             <button 
               key={p.id} 
               onClick={() => navigate(`/${p.id}`)} 
               className={navItemClasses(`/${p.id}`)}
             >
-              <span className="text-lg">{p.icon}</span> {p.label.split(' ')[0]}
+              <span className="text-base">{p.icon}</span>
+              <span className="hidden lg:inline">{p.label.split(' ')[0]}</span>
             </button>
           ))}
         </nav>
 
-        {/* User Zone / Status */}
-        <div className="flex items-center gap-3 shrink-0">
-          {/* IA Status */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-[#C8FF57]/20 bg-[#C8FF57]/5 text-[10px] font-black text-[#C8FF57] uppercase tracking-widest">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#C8FF57] animate-pulse" />
-            IA Active
+        {/* 3. Status & Mobile Toggle */}
+        <div className="flex items-center gap-4">
+          {/* IA Status Badge */}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8FF57]/10 border border-[#C8FF57]/20">
+            <div className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C8FF57] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#C8FF57]"></span>
+            </div>
+            <span className="text-[10px] font-black text-[#C8FF57] uppercase tracking-widest hidden sm:inline">IA Active</span>
+            <Sparkles size={12} className="text-[#C8FF57] sm:hidden" />
           </div>
 
-          {isLoggedIn ? (
-            <div className="flex items-center gap-3">
-              <div className="hidden sm:flex items-center gap-2 rounded-xl border border-[#F9825A]/30 bg-[#F9825A]/10 px-3 py-1.5 text-[10px] font-bold text-[#F9825A] uppercase tracking-widest">
-                <Sparkles size={12} />
-                120 Crédits
-              </div>
-              <button className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/5 text-gray-300 hover:bg-white/10 transition-colors">
-                <User size={18} />
-              </button>
-              <button 
-                onClick={() => setIsLoggedIn(false)}
-                className="hidden text-xs font-bold text-gray-500 hover:text-red-400 transition-colors lg:block"
-              >
-                <LogOut size={16} />
-              </button>
-            </div>
-          ) : (
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(249,130,90,0.5)" }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setIsLoggedIn(true)}
-              className="hidden sm:block rounded-xl bg-[#F9825A] px-5 py-2 text-sm font-bold text-white shadow-[0_0_15px_rgba(249,130,90,0.3)]"
-            >
-              Commencer
-            </motion.button>
-          )}
-
-          {/* Mobile Toggle */}
+          {/* Mobile Menu Button */}
           <button 
             onClick={() => setIsOpen(!isOpen)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-gray-300 md:hidden border border-white/10"
+            className="md:hidden flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/70 border border-white/10 hover:bg-white/10 transition-all"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </div>
 
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        {/* Mobile Dropdown Menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="absolute top-full left-0 right-0 mt-4 p-4 rounded-[2rem] border border-white/10 bg-[#0D0D0F]/80 backdrop-blur-2xl md:hidden flex flex-col gap-2 shadow-2xl"
+            >
+              <button onClick={() => { navigate('/'); setIsOpen(false); }} className={navItemClasses('/')}>
+                <Home size={16} /> Accueil
+              </button>
+              {PLATFORMS.map((p) => (
+                <button 
+                  key={p.id} 
+                  onClick={() => { navigate(`/${p.id}`); setIsOpen(false); }} 
+                  className={navItemClasses(`/${p.id}`)}
+                >
+                  <span className="text-xl">{p.icon}</span> {p.label}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.header>
   );
 };
