@@ -2,6 +2,7 @@ export const PLATFORMS = [
   { id: "instagram", label: "Instagram Reels", icon: "📸", color: "#E1306C" },
   { id: "tiktok", label: "TikTok", icon: "🎵", color: "#69C9D0" },
   { id: "youtube", label: "YouTube Shorts", icon: "▶️", color: "#FF0000" },
+  { id: "facebook", label: "Facebook Reels", icon: "👥", color: "#1877F2" },
 ];
 
 export const DURATIONS = [

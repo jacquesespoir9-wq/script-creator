@@ -6,63 +6,82 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto", padding: "60px 24px", textAlign: 'center' }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "60px 24px", textAlign: 'center' }}>
       <style>{`
         .home-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
           gap: 24px;
         }
-        @media (max-width: 900px) {
-          .home-grid { grid-template-columns: repeat(2, 1fr); }
-          .home-title { font-size: 32px !important; }
+        .platform-card {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+        .platform-card:hover {
+          transform: translateY(-8px);
+          background: rgba(255, 255, 255, 0.08) !important;
+          border-color: rgba(200, 255, 87, 0.3) !important;
         }
         @media (max-width: 600px) {
-          .home-grid { grid-template-columns: 1fr; gap: 16px; }
           .home-title { font-size: 28px !important; }
           .home-desc { font-size: 14px !important; margin-bottom: 32px !important; }
         }
       `}</style>
 
-      <h1 className="home-title" style={{ fontFamily: "'Outfit', sans-serif", fontSize: 42, marginBottom: 16 }}>
-        Choisissez votre <span style={{ color: "#C8FF57" }}>Plateforme</span>
-      </h1>
-      <p className="home-desc" style={{ color: "#888", marginBottom: 48, fontSize: 16 }}>
-        Sélectionnez le mode de création pour générer votre script optimisé.
-      </p>
+      <div className="slide-up">
+        <h1 className="home-title" style={{ fontFamily: "'Outfit', sans-serif", fontSize: 48, marginBottom: 16, fontWeight: 800 }}>
+          Créez des <span style={{ color: "#C8FF57" }}>Scripts</span> Viraux
+        </h1>
+        <p className="home-desc" style={{ color: "#888", marginBottom: 56, fontSize: 18, maxWidth: 600, margin: "0 auto 56px" }}>
+          L'IA analyse vos visuels de design pour générer le script parfait adapté à chaque plateforme.
+        </p>
 
-      <div className="home-grid">        {PLATFORMS.map((p) => (
-          <div 
-            key={p.id}
-            onClick={() => navigate(`/${p.id}`)}
-            className="pill-btn glass-panel"
-            style={{ 
-              border: "none", 
-              borderRadius: 24, 
-              padding: "40px 24px",
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 16
-            }}
-          >
-            <div style={{ fontSize: 48 }}>{p.icon}</div>
-            <div style={{ fontSize: 20, fontWeight: 700, fontFamily: "'Outfit', sans-serif" }}>{p.label}</div>
-            <div style={{ fontSize: 13, color: "#666" }}>Script optimisé pour {p.label}</div>
-            <div style={{ 
-              marginTop: 12,
-              padding: "8px 20px",
-              borderRadius: 12,
-              background: p.color,
-              color: "#fff",
-              fontSize: 12,
-              fontWeight: 700
-            }}>
-              Ouvrir le mode
+        <div className="home-grid">
+          {PLATFORMS.map((p) => (
+            <div 
+              key={p.id}
+              onClick={() => navigate(`/${p.id}`)}
+              className="platform-card glass-panel"
+              style={{ 
+                borderRadius: 28, 
+                padding: "40px 24px",
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 16
+              }}
+            >
+              <div style={{ 
+                fontSize: 44, 
+                background: "rgba(255,255,255,0.03)", 
+                width: 80, 
+                height: 80, 
+                borderRadius: 20, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginBottom: 8
+              }}>
+                {p.icon}
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Outfit', sans-serif" }}>{p.label}</div>
+              <div style={{ fontSize: 12, color: "#666", lineHeight: 1.5 }}>Contenu optimisé pour {p.label}</div>
+              <div style={{ 
+                marginTop: 12,
+                padding: "10px 24px",
+                borderRadius: 14,
+                background: p.color,
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 800,
+                boxShadow: `0 10px 20px ${p.color}33`
+              }}>
+                Sélectionner
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

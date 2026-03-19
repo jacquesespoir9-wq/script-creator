@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import InstagramPage from './pages/InstagramPage';
 import TikTokPage from './pages/TikTokPage';
 import YouTubePage from './pages/YouTubePage';
+import FacebookPage from './pages/FacebookPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/instagram" element={<InstagramPage />} />
           <Route path="/tiktok" element={<TikTokPage />} />
           <Route path="/youtube" element={<YouTubePage />} />
+          <Route path="/facebook" element={<FacebookPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
