@@ -25,6 +25,35 @@ body {
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
 
+.premium-card {
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4) !important;
+}
+
+.ai-badge {
+  background: rgba(200, 255, 87, 0.1);
+  color: #C8FF57;
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(200, 255, 87, 0.2);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
 .premium-gradient-text {
   background: linear-gradient(135deg, #fff 0%, #888 100%);
   -webkit-background-clip: text;
