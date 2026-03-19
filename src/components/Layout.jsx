@@ -1,10 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Sparkles, PenLine } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Sparkles, PenLine, Home, LayoutGrid } from 'lucide-react';
+import { PLATFORMS } from '../constants';
 import InstallBanner from './InstallBanner';
 
 const Layout = ({ children }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="relative min-h-screen bg-[#050508] text-[#F0EDE8] overflow-hidden">
@@ -14,26 +16,58 @@ const Layout = ({ children }) => {
       <div className="blob top-[40%] left-[40%] w-[450px] h-[450px] bg-[rgba(225,48,108,0.25)] [animation-delay:-10s]"></div>
 
       {/* Header */}
-      <header className="content-layer glass-panel sticky top-0 z-[100] flex items-center justify-between px-8 py-5 border-none">
-        <div 
-          onClick={() => navigate('/')} 
-          className="flex items-center gap-3 cursor-pointer"
-        >
-          <div className="w-9 h-9 bg-[#C8FF57] rounded-xl flex items-center justify-center text-[#0D0D0F]">
-            <PenLine size={20} />
+      <header className="sticky top-0 z-[100] w-full px-4 py-4">
+        <div className="max-w-7xl mx-auto glass-panel rounded-3xl px-6 py-3 flex items-center justify-between border-none">
+          {/* Logo */}
+          <div 
+            onClick={() => navigate('/')} 
+            className="flex items-center gap-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 bg-[#C8FF57] rounded-2xl flex items-center justify-center text-[#0D0D0F] shadow-[0_0_20px_rgba(200,255,87,0.3)] group-hover:scale-110 transition-transform">
+              <PenLine size={22} />
+            </div>
+            <div className="hidden xs:block">
+              <div className="font-['Outfit'] text-xl font-extrabold tracking-tight leading-none">ScriptGen</div>
+              <div className="text-[10px] text-gray-500 tracking-[0.2em] uppercase mt-1">AI Studio</div>
+            </div>
           </div>
-          <div>
-            <div className="font-['Outfit'] text-lg font-extrabold tracking-tight">ScriptGen</div>
-            <div className="text-[11px] text-gray-500 tracking-widest uppercase hidden sm:block">Design Tutorials</div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-1 bg-[#0D0D0F]/50 p-1 rounded-2xl border border-white/5">
+            <button 
+              onClick={() => navigate('/')}
+              className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${location.pathname === '/' ? 'bg-[#C8FF57] text-[#0D0D0F]' : 'text-gray-400 hover:text-white'}`}
+            >
+              <Home size={16} /> Accueil
+            </button>
+            {PLATFORMS.map(p => (
+              <button 
+                key={p.id}
+                onClick={() => navigate(`/${p.id}`)}
+                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${location.pathname === `/${p.id}` ? 'bg-white/10 text-white' : 'text-gray-400 hover:text-white hover:bg-white/5'}`}
+              >
+                {p.icon} {p.label.split(' ')[0]}
+              </button>
+            ))}
+          </nav>
+
+          {/* Right Side */}
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2 text-[11px] font-bold text-[#C8FF57] bg-[#C8FF57]/10 border border-[#C8FF57]/20 rounded-xl uppercase tracking-wider">
+              <Sparkles size={14} />
+              IA Active
+            </div>
+            <button 
+              onClick={() => navigate('/')}
+              className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-gray-400 hover:text-white border border-white/5"
+            >
+              <LayoutGrid size={20} />
+            </button>
           </div>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1 text-xs text-gray-400 bg-[#141418] border border-[#222] rounded-full">
-          <Sparkles size={14} className="text-[#C8FF57]" />
-          IA Powered
         </div>
       </header>
 
-      <main className="content-layer relative min-h-[calc(100vh-80px)]">
+      <main className="relative z-10">
         {children}
       </main>
       
