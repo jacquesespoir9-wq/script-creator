@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../supabaseClient';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const [image, setImage] = useState(null);
@@ -68,48 +69,26 @@ Génère un script structuré avec :
 Sois précis, concis et adapte le script au format ${platformInfo.label} (durée ${duration}s). Le script doit être directement utilisable pour filmer.`;
 
     try {
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`,
-          "HTTP-Referer": window.location.origin,
-          "X-Title": "ScriptGen"
-        },
-        body: JSON.stringify({
-          model: "anthropic/claude-3.5-sonnet", 
-          max_tokens: 1000,
-          messages: [
-            {
-              role: "user",
-              content: [
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: `data:${imageBase64.type};base64,${imageBase64.data}`
-                  }
-                },
-                { type: "text", text: prompt },
-              ],
-            },
-          ],
-        }),
-      });
+      const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
+      if (!API_KEY) throw new Error("Clé API Google Gemini manquante.");
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        const errorMessage = errorData?.error?.message || `Erreur (Code ${response.status})`;
-        
-        if (response.status === 401) throw new Error("Clé API invalide. Vérifie ta clé OpenRouter.");
-        if (response.status === 402) throw new Error("Crédits insuffisants sur ton compte OpenRouter.");
-        if (response.status === 429) throw new Error("Trop de requêtes. Attends un instant.");
-        
-        throw new Error(errorMessage);
-      }
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      const data = await response.json();
-      const text = data.choices?.[0]?.message?.content || "";
-      if (!text) throw new Error("Réponse vide de l'API. (Vérifiez le modèle sélectionné)");
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            data: imageBase64.data,
+            mimeType: imageBase64.type
+          }
+        }
+      ]);
+
+      const response = await result.response;
+      const text = response.text();
+      
+      if (!text) throw new Error("Réponse vide de l'IA.");
       
       setScript(text);
 
@@ -133,9 +112,9 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
 
     } catch (error) {
       console.error("Détails de l'erreur:", error);
-      setError(error.message.includes("fetch") || error.message.includes("Network") 
-        ? "Problème de connexion internet. Vérifie ton réseau." 
-        : error.message);
+      setError(error.message.includes("API key not valid") 
+          ? "Clé API Google non valide. Vérifie ta configuration." 
+          : "Erreur IA : " + error.message);
     } finally {
       setLoading(false);
     }
