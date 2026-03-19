@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from './Navbar';
 import InstallBanner from './InstallBanner';
 
 const Layout = ({ children }) => {
@@ -9,7 +10,9 @@ const Layout = ({ children }) => {
       <div className="blob bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[rgba(249,130,90,0.15)] [animation-delay:-5s]"></div>
       <div className="blob top-[40%] left-[40%] w-[450px] h-[450px] bg-[rgba(46,49,146,0.15)] [animation-delay:-10s]"></div>
 
-      <main className="relative z-10 pt-10">
+      <Navbar />
+
+      <main className="relative z-10 pt-24 sm:pt-32">
         {children}
       </main>
       
