@@ -53,7 +53,7 @@ const HomePage = () => {
 
       <div className="slide-up">
         <div className="ai-badge">
-          <Sparkles size={14} /> Powered by Gemini 2.0 Flash
+          <Sparkles size={14} /> Powered by Jacques Design
         </div>
         
         <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 'clamp(32px, 8vw, 64px)', marginBottom: 20, fontWeight: 800, lineHeight: 1.1 }}>
