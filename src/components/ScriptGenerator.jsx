@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -43,11 +43,10 @@ const ScriptGenerator = ({ initialPlatformId }) => {
       return;
     }
     
-    // Récupération de la clé API
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
     if (!API_KEY) {
-      setError("La clé API n'est pas détectée. Avez-vous bien cliqué sur 'Rebuild' après l'avoir ajoutée dans les Secrets ?");
+      setError("La clé API n'est pas détectée dans les Secrets.");
       return;
     }
 
@@ -128,21 +127,19 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       
       setScript(text);
 
-      // Tentative de sauvegarde si Supabase est configuré
-      if (supabase && import.meta.env.VITE_SUPABASE_URL !== "https://placeholder.supabase.co") {
-        try {
-          await supabase
-            .from('scripts')
-            .insert([{
-              content: text,
-              platform: platformInfo.label,
-              duration: duration,
-              tone: tone,
-              image_provided: true
-            }]);
-        } catch (sbError) {
-          console.warn("Note: Sauvegarde DB échouée.", sbError);
-        }
+      // Sauvegarde dans Supabase
+      try {
+        await supabase
+          .from('scripts')
+          .insert([{
+            content: text,
+            platform: platformInfo.label,
+            duration: duration,
+            tone: tone,
+            image_provided: true
+          }]);
+      } catch (sbError) {
+        console.warn("Note: Sauvegarde DB échouée.", sbError);
       }
 
     } catch (err) {

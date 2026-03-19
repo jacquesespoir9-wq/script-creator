@@ -1,5 +1,6 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
+import { Heart, History } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -12,6 +13,12 @@ const Footer = () => {
           <p style={{ color: '#888', fontSize: '14px', marginBottom: '24px', maxWidth: '400px' }}>
             L'outil ultime pour transformer vos designs en scripts viraux grâce à l'intelligence artificielle.
           </p>
+          
+          <div className="flex gap-4 mb-6">
+            <Link to="/history" className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-sm font-semibold text-gray-300">
+              <History size={16} /> Historique des scripts
+            </Link>
+          </div>
           
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', width: '100%', marginBottom: '24px' }}></div>
           
