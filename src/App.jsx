@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import PlatformPage from './pages/PlatformPage';
-import HistoryPage from './pages/HistoryPage';
 
 function App() {
   return (
@@ -11,7 +10,6 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/history" element={<HistoryPage />} />
           <Route path="/:platformId" element={<PlatformPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
