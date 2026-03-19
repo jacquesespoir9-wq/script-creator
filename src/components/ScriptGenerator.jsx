@@ -101,7 +101,8 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       const text = data.choices?.[0]?.message?.content || "";
       if (!text) throw new Error("Réponse vide de l'API. (Vérifiez votre clé API OpenRouter)");
       setScript(text);
-    } catch (err) {
+    } catch (error) {
+      console.error(error);
       setError("Erreur lors de la génération. Vérifie ta connexion et réessaie.");
     } finally {
       setLoading(false);
