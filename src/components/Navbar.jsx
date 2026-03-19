@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { History, Home, Sparkles } from 'lucide-react';
+import { History, Home, Sparkles, LayoutGrid } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
@@ -8,53 +8,46 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-48px)] max-w-4xl">
-      <div className="glass-panel rounded-full px-6 py-3 flex items-center justify-between border border-white/10 shadow-2xl">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <div className="w-8 h-8 bg-[#C8FF57] rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(200,255,87,0.3)]">
-            <Sparkles size={18} color="#0D0D0F" strokeWidth={2.5} />
-          </div>
-          <span className="font-outfit font-extrabold text-lg tracking-tight">
-            Script<span className="text-[#C8FF57]">Gen</span>
-          </span>
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-32px)] max-w-fit">
+      <div className="glass-panel rounded-full px-2 py-2 flex items-center gap-1 border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+        
+        {/* Logo / Home Link */}
+        <Link 
+          to="/" 
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300 ${
+            isActive('/') 
+              ? 'bg-[#C8FF57] text-[#0D0D0F]' 
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <Home size={18} strokeWidth={isActive('/') ? 2.5 : 2} />
+          <span className="text-sm font-bold font-outfit">Accueil</span>
         </Link>
 
-        {/* Navigation Links */}
-        <div className="flex items-center gap-1 md:gap-4">
-          <Link 
-            to="/" 
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
-              isActive('/') 
-                ? 'bg-white/10 text-[#C8FF57]' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <Home size={16} />
-            <span className="hidden md:inline">Accueil</span>
-          </Link>
-          
-          <Link 
-            to="/history" 
-            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
-              isActive('/history') 
-                ? 'bg-white/10 text-[#C8FF57]' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
-            <History size={16} />
-            <span className="hidden md:inline">Historique</span>
-          </Link>
-        </div>
+        {/* History Link */}
+        <Link 
+          to="/history" 
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300 ${
+            isActive('/history') 
+              ? 'bg-[#C8FF57] text-[#0D0D0F]' 
+              : 'text-gray-400 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          <History size={18} strokeWidth={isActive('/history') ? 2.5 : 2} />
+          <span className="text-sm font-bold font-outfit">Historique</span>
+        </Link>
 
-        {/* Pro Badge / Action */}
-        <div className="hidden sm:flex items-center gap-3 pl-4 border-l border-white/10">
-          <div className="px-3 py-1 rounded-md bg-[#C8FF57]/10 border border-[#C8FF57]/20 text-[#C8FF57] text-[10px] font-black uppercase tracking-widest">
-            PRO
+        {/* Separator */}
+        <div className="w-[1px] h-6 bg-white/10 mx-1"></div>
+
+        {/* Pro Badge / Brand */}
+        <div className="flex items-center gap-2 px-4 py-2.5">
+          <div className="w-6 h-6 bg-white/5 rounded-lg flex items-center justify-center">
+            <Sparkles size={14} className="text-[#C8FF57]" />
           </div>
-          <div className="text-[11px] font-bold text-gray-500 font-outfit">
-            BY JACQUES
-          </div>
+          <span className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] hidden sm:block">
+            PRO MODE
+          </span>
         </div>
       </div>
     </nav>
