@@ -7,7 +7,16 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['icon.svg'],
+      injectRegister: 'auto',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true
+      },
+      devOptions: {
+        enabled: false // Désactivé en dev pour éviter les erreurs d'importation virtual:pwa-register
+      },
       manifest: {
         name: 'ScriptGen - Design Tutorials',
         short_name: 'ScriptGen',
@@ -28,9 +37,6 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
-      },
-      devOptions: {
-        enabled: true
       }
     })
   ],
