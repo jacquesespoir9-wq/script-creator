@@ -43,9 +43,11 @@ const ScriptGenerator = ({ initialPlatformId }) => {
       return;
     }
     
+    // Récupération de la clé API
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
-    if (!API_KEY || API_KEY.length < 10) {
-      setError("Clé API OpenRouter manquante. Veuillez ajouter VITE_OPENROUTER_API_KEY dans les variables d'environnement.");
+    
+    if (!API_KEY) {
+      setError("La clé API n'est pas détectée. Avez-vous bien cliqué sur 'Rebuild' après l'avoir ajoutée dans les Secrets ?");
       return;
     }
 
@@ -114,36 +116,38 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
         })
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error?.message || "Erreur API OpenRouter");
+        throw new Error(data.error?.message || `Erreur API (${response.status})`);
       }
 
-      const data = await response.json();
       const text = data.choices[0]?.message?.content;
       
       if (!text) throw new Error("L'IA n'a pas pu générer de texte.");
       
       setScript(text);
 
-      if (supabase) {
-        supabase
-          .from('scripts')
-          .insert([{
-            content: text,
-            platform: platformInfo.label,
-            duration: duration,
-            tone: tone,
-            image_provided: true
-          }])
-          .then(({ error: sbError }) => {
-            if (sbError) console.warn("Note: Sauvegarde DB ignorée.", sbError);
-          });
+      // Tentative de sauvegarde si Supabase est configuré
+      if (supabase && import.meta.env.VITE_SUPABASE_URL !== "https://placeholder.supabase.co") {
+        try {
+          await supabase
+            .from('scripts')
+            .insert([{
+              content: text,
+              platform: platformInfo.label,
+              duration: duration,
+              tone: tone,
+              image_provided: true
+            }]);
+        } catch (sbError) {
+          console.warn("Note: Sauvegarde DB échouée.", sbError);
+        }
       }
 
     } catch (err) {
-      console.error("Erreur:", err);
-      setError("Erreur : " + err.message);
+      console.error("Erreur complète:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
