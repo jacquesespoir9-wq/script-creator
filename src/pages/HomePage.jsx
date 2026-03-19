@@ -1,14 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS } from '../constants';
-import { Instagram, Music2, Youtube, Facebook, ArrowRight } from 'lucide-react';
-
-const IconMap = {
-  Instagram,
-  Music2,
-  Youtube,
-  Facebook
-};
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -45,56 +37,50 @@ const HomePage = () => {
         </p>
 
         <div className="home-grid">
-          {PLATFORMS.map((p) => {
-            const IconComponent = IconMap[p.iconName];
-            return (
-              <div 
-                key={p.id}
-                onClick={() => navigate(`/${p.id}`)}
-                className="platform-card glass-panel"
-                style={{ 
-                  borderRadius: 28, 
-                  padding: "40px 24px",
-                  cursor: 'pointer',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: 16
-                }}
-              >
-                <div style={{ 
-                  background: `${p.color}15`, 
-                  width: 80, 
-                  height: 80, 
-                  borderRadius: 24, 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  marginBottom: 8,
-                  color: p.color
-                }}>
-                  <IconComponent size={40} strokeWidth={1.5} />
-                </div>
-                <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Outfit', sans-serif" }}>{p.label}</div>
-                <div style={{ fontSize: 12, color: "#666", lineHeight: 1.5 }}>Contenu optimisé pour {p.label}</div>
-                <div style={{ 
-                  marginTop: 12,
-                  padding: "10px 24px",
-                  borderRadius: 14,
-                  background: p.color,
-                  color: "#fff",
-                  fontSize: 13,
-                  fontWeight: 800,
-                  boxShadow: `0 10px 20px ${p.color}33`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 8
-                }}>
-                  Sélectionner <ArrowRight size={14} />
-                </div>
+          {PLATFORMS.map((p) => (
+            <div 
+              key={p.id}
+              onClick={() => navigate(`/${p.id}`)}
+              className="platform-card glass-panel"
+              style={{ 
+                borderRadius: 28, 
+                padding: "40px 24px",
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 16
+              }}
+            >
+              <div style={{ 
+                fontSize: 44, 
+                background: "rgba(255,255,255,0.03)", 
+                width: 80, 
+                height: 80, 
+                borderRadius: 20, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                marginBottom: 8
+              }}>
+                {p.icon}
               </div>
-            );
-          })}
+              <div style={{ fontSize: 18, fontWeight: 700, fontFamily: "'Outfit', sans-serif" }}>{p.label}</div>
+              <div style={{ fontSize: 12, color: "#666", lineHeight: 1.5 }}>Contenu optimisé pour {p.label}</div>
+              <div style={{ 
+                marginTop: 12,
+                padding: "10px 24px",
+                borderRadius: 14,
+                background: p.color,
+                color: "#fff",
+                fontSize: 13,
+                fontWeight: 800,
+                boxShadow: `0 10px 20px ${p.color}33`
+              }}>
+                Sélectionner
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

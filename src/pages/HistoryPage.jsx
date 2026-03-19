@@ -4,14 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import BackButton from '../components/BackButton';
 import { PLATFORMS } from '../constants';
-import { Trash2, Clock, Copy, Check, Instagram, Music2, Youtube, Facebook } from 'lucide-react';
-
-const IconMap = {
-  Instagram,
-  Music2,
-  Youtube,
-  Facebook
-};
+import { Trash2, Clock, Copy, Check } from 'lucide-react';
 
 const HistoryPage = () => {
   const [scripts, setScripts] = useState([]);
@@ -65,13 +58,12 @@ const HistoryPage = () => {
         <div className="grid gap-6">
           {scripts.map((script) => {
             const platform = PLATFORMS.find(p => p.label === script.platform) || PLATFORMS[0];
-            const Icon = IconMap[platform.iconName];
             return (
               <div key={script.id} className="glass-panel rounded-3xl p-6 slide-up">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ background: platform.color + '22', color: platform.color }}>
-                      <Icon size={20} />
+                      {platform.icon}
                     </div>
                     <div>
                       <h3 className="font-bold font-outfit">{script.platform}</h3>
