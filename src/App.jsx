@@ -2,10 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
-import InstagramPage from './pages/InstagramPage';
-import TikTokPage from './pages/TikTokPage';
-import YouTubePage from './pages/YouTubePage';
-import FacebookPage from './pages/FacebookPage';
+import PlatformPage from './pages/PlatformPage';
 
 function App() {
   return (
@@ -13,10 +10,7 @@ function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/instagram" element={<InstagramPage />} />
-          <Route path="/tiktok" element={<TikTokPage />} />
-          <Route path="/youtube" element={<YouTubePage />} />
-          <Route path="/facebook" element={<FacebookPage />} />
+          <Route path="/:platformId" element={<PlatformPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>
