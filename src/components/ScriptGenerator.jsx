@@ -132,6 +132,7 @@ ${format === 'video'
   };
 
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
+  const formatLabel = FORMATS.find(f => f.id === format)?.label;
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 60px" }}>
@@ -177,19 +178,7 @@ ${format === 'video'
 
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none", display: "flex", flexDirection: "column", gap: 20 }}>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Format de publication</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {FORMATS.map((f) => (
-                  <button key={f.id} className={`option-btn ${format === f.id ? 'active-opt' : ''}`} onClick={() => setFormat(f.id)}
-                    style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: format === f.id ? "#C8FF57" : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{f.icon}</span> {f.label.split(' ')[0]}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Plateforme</label>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Plateforme</label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {PLATFORMS.map((p) => (
                   <button key={p.id} className={`option-btn ${platform === p.id ? 'active-opt' : ''}`} onClick={() => changePlatform(p.id)}
@@ -201,8 +190,18 @@ ${format === 'video'
             </div>
 
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>4. Options</label>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Options</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Format de publication déplacé ici */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                  {FORMATS.map((f) => (
+                    <button key={f.id} className={`option-btn ${format === f.id ? 'active-opt' : ''}`} onClick={() => setFormat(f.id)}
+                      style={{ padding: "10px 8px", borderRadius: 12, background: "#0F0F13", color: format === f.id ? "#C8FF57" : "#555", fontSize: 11, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+                      <span>{f.icon}</span> {f.label.split(' ')[0]}
+                    </button>
+                  ))}
+                </div>
+
                 {format === 'video' && (
                   <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
                     {DURATIONS.map((d) => (
@@ -213,6 +212,7 @@ ${format === 'video'
                     ))}
                   </div>
                 )}
+                
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                   {TONES.map((t) => (
                     <button key={t.id} onClick={() => setTone(t.id)}
