@@ -52,66 +52,91 @@ const InstallBanner = () => {
   if (!deferredPrompt || !isVisible) return null;
 
   return (
-    <div className="slide-up glass-panel" style={{
-      position: 'fixed',
-      bottom: 24,
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 9999,
-      color: '#F0EDE8',
-      padding: '16px 20px',
-      borderRadius: '24px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '20px',
-      boxShadow: '0 16px 40px rgba(0, 0, 0, 0.4)',
-      width: 'max-content',
-      maxWidth: '90vw'
-    }}>
-      <div>
-        <div style={{ fontWeight: 800, fontSize: '15px', fontFamily: "'Outfit', sans-serif" }}>Télécharger ScriptGen</div>
-        <div style={{ fontSize: '13px', opacity: 0.8, fontWeight: 500, marginTop: 2 }}>Installez l'app sur votre téléphone.</div>
+    <>
+      <style>{`
+        .install-notification {
+          position: fixed;
+          bottom: 24px;
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 9999;
+          color: #F0EDE8;
+          padding: 16px 20px;
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          gap: 20px;
+          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+          width: max-content;
+          max-width: 90vw;
+        }
+
+        @media (max-width: 600px) {
+          .install-notification {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+            bottom: 20px;
+            width: calc(100% - 40px);
+            max-width: 340px;
+            padding: 20px;
+          }
+          .install-notification .install-btn {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      `}</style>
+      
+      <div className="slide-up glass-panel install-notification">
+        <div>
+          <div style={{ fontWeight: 800, fontSize: '15px', fontFamily: "'Outfit', sans-serif" }}>Télécharger ScriptGen</div>
+          <div style={{ fontSize: '13px', opacity: 0.8, fontWeight: 500, marginTop: 2 }}>Installez l'app sur votre téléphone.</div>
+        </div>
+        <button 
+          onClick={handleInstallClick}
+          className="pill-btn install-btn"
+          style={{
+            background: '#C8FF57',
+            color: '#0D0D0F',
+            border: 'none',
+            padding: '12px 20px',
+            borderRadius: '14px',
+            fontWeight: 800,
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            fontFamily: "'Outfit', sans-serif",
+            fontSize: '13px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6
+          }}
+        >
+          <span style={{ fontSize: 16 }}>📥</span> Installer l'App
+        </button>
+        <button 
+          onClick={() => setIsVisible(false)}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: '#F0EDE8',
+            opacity: 0.5,
+            cursor: 'pointer',
+            padding: '8px',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '8px',
+            position: 'absolute',
+            top: 4,
+            right: 4
+          }}
+        >
+          ✕
+        </button>
       </div>
-      <button 
-        onClick={handleInstallClick}
-        style={{
-          background: '#C8FF57',
-          color: '#0D0D0F',
-          border: 'none',
-          padding: '12px 20px',
-          borderRadius: '14px',
-          fontWeight: 800,
-          cursor: 'pointer',
-          whiteSpace: 'nowrap',
-          fontFamily: "'Outfit', sans-serif",
-          fontSize: '13px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6
-        }}
-        className="pill-btn"
-      >
-        <span style={{ fontSize: 16 }}>📥</span> Installer l'App
-      </button>
-      <button 
-        onClick={() => setIsVisible(false)}
-        style={{
-          background: 'transparent',
-          border: 'none',
-          color: '#F0EDE8',
-          opacity: 0.5,
-          cursor: 'pointer',
-          padding: '8px',
-          fontSize: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: '8px'
-        }}
-      >
-        ✕
-      </button>
-    </div>
+    </>
   );
 };
 
