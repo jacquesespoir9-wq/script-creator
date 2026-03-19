@@ -1,5 +1,4 @@
 import React from 'react';
-import InstallBanner from './InstallBanner';
 import Footer from './Footer';
 
 const Layout = ({ children }) => {
@@ -15,7 +14,6 @@ const Layout = ({ children }) => {
       </main>
       
       <Footer />
-      <InstallBanner />
 
       <style>{`
         .no-scrollbar::-webkit-scrollbar {
