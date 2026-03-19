@@ -4,7 +4,6 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../supabaseClient';
-import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -44,9 +43,9 @@ const ScriptGenerator = ({ initialPlatformId }) => {
       return;
     }
     
-    const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
-    if (!API_KEY || API_KEY === "votre_cle_api_ici" || API_KEY.length < 10) {
-      setError("Clé API Google Gemini manquante ou invalide. Veuillez configurer VITE_GOOGLE_GEMINI_API_KEY dans les variables d'environnement.");
+    const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
+    if (!API_KEY || API_KEY.length < 10) {
+      setError("Clé API OpenRouter manquante. Veuillez ajouter VITE_OPENROUTER_API_KEY dans les variables d'environnement.");
       return;
     }
 
@@ -88,51 +87,63 @@ Génère un script structuré avec :
 Sois précis, concis et adapte le script au format ${platformInfo.label} (durée ${duration}s). Le script doit être directement utilisable pour filmer.`;
 
     try {
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${API_KEY}`,
+          "Content-Type": "application/json",
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "ScriptGen",
+        },
+        body: JSON.stringify({
+          "model": "google/gemini-flash-1.5",
+          "messages": [
+            {
+              "role": "user",
+              "content": [
+                { "type": "text", "text": prompt },
+                {
+                  "type": "image_url",
+                  "image_url": {
+                    "url": `data:${imageBase64.type};base64,${imageBase64.data}`
+                  }
+                }
+              ]
+            }
+          ]
+        })
+      });
 
-      const result = await model.generateContent([
-        prompt,
-        {
-          inlineData: {
-            data: imageBase64.data,
-            mimeType: imageBase64.type
-          }
-        }
-      ]);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Erreur API OpenRouter");
+      }
 
-      const response = await result.response;
-      const text = response.text();
+      const data = await response.json();
+      const text = data.choices[0]?.message?.content;
       
-      if (!text) throw new Error("L'IA n'a pas pu générer de texte. Réessayez avec une autre image.");
+      if (!text) throw new Error("L'IA n'a pas pu générer de texte.");
       
       setScript(text);
 
-      // Sauvegarde en arrière-plan (ne bloque pas l'affichage du script)
       if (supabase) {
         supabase
           .from('scripts')
-          .insert([
-            {
-              content: text,
-              platform: platformInfo.label,
-              duration: duration,
-              tone: tone,
-              image_provided: true
-            }
-          ])
+          .insert([{
+            content: text,
+            platform: platformInfo.label,
+            duration: duration,
+            tone: tone,
+            image_provided: true
+          }])
           .then(({ error: sbError }) => {
-            if (sbError) console.warn("Note: Le script n'a pas pu être sauvegardé (vérifiez si la table 'scripts' existe).", sbError);
-          })
-          .catch(err => console.warn("Erreur Supabase ignorée:", err));
+            if (sbError) console.warn("Note: Sauvegarde DB ignorée.", sbError);
+          });
       }
 
     } catch (err) {
-      console.error("Erreur lors de la génération:", err);
-      let msg = "Une erreur est survenue lors de la génération.";
-      if (err.message.includes("API key")) msg = "Clé API invalide ou restreinte.";
-      if (err.message.includes("safety")) msg = "Le contenu a été bloqué par les filtres de sécurité de l'IA.";
-      setError(msg + " (Détails : " + err.message + ")");
+      console.error("Erreur:", err);
+      setError("Erreur : " + err.message);
     } finally {
       setLoading(false);
     }
