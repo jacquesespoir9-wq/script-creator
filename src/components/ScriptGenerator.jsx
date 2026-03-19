@@ -10,6 +10,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
+  const [ideaText, setIdeaText] = useState("");
   const [duration, setDuration] = useState("60");
   const [tone, setTone] = useState("educational");
   const [loading, setLoading] = useState(false);
@@ -39,16 +40,15 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   };
 
   const generateScript = async () => {
-    if (!imageBase64) {
-      setError("Veuillez d'abord importer une image de votre design.");
+    if (!imageBase64 && !ideaText.trim()) {
+      setError("Veuillez importer une image ou décrire votre idée de design.");
       return;
     }
     
-    // Récupération de la clé API
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
     if (!API_KEY || API_KEY === "") {
-      setError("ERREUR (v1.0.2) : Clé API non détectée. 1. Vérifiez le nom 'VITE_OPENROUTER_API_KEY' dans Secrets. 2. Cliquez sur REBUILD. 3. Videz le cache de votre navigateur externe.");
+      setError("ERREUR (v1.0.3) : Clé API non détectée. Vérifiez vos Secrets et faites un REBUILD.");
       return;
     }
 
@@ -57,11 +57,35 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     setScript(null);
 
     const platformInfo = PLATFORMS.find((p) => p.id === platform);
-    const prompt = `Tu es un expert en création de contenu pour les réseaux sociaux, spécialisé dans les tutoriels de design graphique. 
-Analyse cette image et crée un script complet pour une vidéo tutoriel de design graphique à publier sur ${platformInfo.label}.
+    
+    // Construction du prompt dynamique
+    let userContent = [];
+    let systemPrompt = `Tu es un expert en création de contenu pour les réseaux sociaux, spécialisé dans les tutoriels de design graphique. 
+Crée un script complet pour une vidéo tutoriel à publier sur ${platformInfo.label}.
 Ton : ${TONES.find((t) => t.id === tone)?.label}
 Durée : ${duration} secondes.
 Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAGS et DESCRIPTION.`;
+
+    if (ideaText.trim()) {
+      userContent.push({ 
+        type: "text", 
+        text: `Voici l'idée du design à expliquer : ${ideaText.trim()}` 
+      });
+    } else {
+      userContent.push({ 
+        type: "text", 
+        text: "Analyse cette image de design et crée un tutoriel basé sur celle-ci." 
+      });
+    }
+
+    if (imageBase64) {
+      userContent.push({
+        type: "image_url",
+        image_url: {
+          url: `data:${imageBase64.type};base64,${imageBase64.data}`
+        }
+      });
+    }
 
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -74,18 +98,8 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
         body: JSON.stringify({
           "model": "google/gemini-2.0-flash-001",
           "messages": [
-            {
-              "role": "user",
-              "content": [
-                { "type": "text", "text": prompt },
-                {
-                  "type": "image_url",
-                  "image_url": {
-                    "url": `data:${imageBase64.type};base64,${imageBase64.data}`
-                  }
-                }
-              ]
-            }
+            { "role": "system", "content": systemPrompt },
+            { "role": "user", "content": userContent }
           ]
         })
       });
@@ -101,13 +115,13 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
       
       setScript(text);
 
-      // Sauvegarde silencieuse dans Supabase
+      // Sauvegarde dans Supabase
       supabase.from('scripts').insert([{
         content: text,
         platform: platformInfo.label,
         duration: duration,
         tone: tone,
-        image_provided: true
+        image_provided: !!imageBase64
       }]).then(({ error }) => { if (error) console.warn("DB Error:", error); });
 
     } catch (err) {
@@ -126,7 +140,8 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
 
   const reset = () => {
     setImage(null);
-    setImageBase64(null);
+    imageBase64(null);
+    setIdeaText("");
     setScript(null);
     setError(null);
   };
@@ -139,26 +154,54 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
         .generator-container { display: grid; grid-template-columns: 400px 1fr; gap: 32px; }
         .option-btn { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05) !important; }
         .active-platform { background: rgba(255,255,255,0.08) !important; border-color: currentColor !important; }
+        .text-area-custom {
+          width: 100%;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 16px;
+          padding: 16px;
+          color: #F0EDE8;
+          font-size: 14px;
+          resize: none;
+          outline: none;
+          transition: border-color 0.2s ease;
+        }
+        .text-area-custom:focus {
+          border-color: rgba(200, 255, 87, 0.5);
+        }
         @media (max-width: 950px) { .generator-container { grid-template-columns: 1fr; } }
       `}</style>
       <div className="generator-container">
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Image du Design</span>
-            <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
-            {!image ? (
-              <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
-                <div style={{ border: "2px dashed rgba(255,255,255,0.1)", borderRadius: 16, padding: "40px 20px", textAlign: "center" }} className="hover:border-[#C8FF57]/30">
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>🎨</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#F0EDE8" }}>Importer un design</div>
+            <span style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Image ou Idée</span>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
+              {!image ? (
+                <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
+                  <div style={{ border: "2px dashed rgba(255,255,255,0.1)", borderRadius: 16, padding: "24px 20px", textAlign: "center" }} className="hover:border-[#C8FF57]/30">
+                    <div style={{ fontSize: 32, marginBottom: 8 }}>🎨</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "#F0EDE8" }}>Importer un design</div>
+                  </div>
+                </label>
+              ) : (
+                <div style={{ position: "relative", borderRadius: 16, overflow: "hidden" }}>
+                  <img src={image} alt="preview" style={{ width: "100%", height: 180, objectFit: "cover" }} />
+                  <button onClick={() => { setImage(null); setImageBase64(null); }} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", borderRadius: 10, padding: "6px 12px", cursor: "pointer", fontSize: 11 }}>✕</button>
                 </div>
-              </label>
-            ) : (
-              <div style={{ position: "relative", borderRadius: 16, overflow: "hidden" }}>
-                <img src={image} alt="preview" style={{ width: "100%", height: 240, objectFit: "cover" }} />
-                <button onClick={reset} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", borderRadius: 10, padding: "6px 12px", cursor: "pointer", fontSize: 11 }}>✕ Retirer</button>
+              )}
+
+              <div style={{ position: "relative" }}>
+                <textarea 
+                  className="text-area-custom"
+                  placeholder="Ou décrivez votre idée de design ici... (ex: Comment créer un logo minimaliste sur Canva)"
+                  rows={4}
+                  value={ideaText}
+                  onChange={(e) => setIdeaText(e.target.value)}
+                />
               </div>
-            )}
+            </div>
           </div>
 
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -214,7 +257,7 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
             {!script && !loading && (
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.2 }}>
                 <div style={{ fontSize: 64 }}>📄</div>
-                <div style={{ fontSize: 15, color: "#F0EDE8", textAlign: "center" }}>Importez un design pour commencer</div>
+                <div style={{ fontSize: 15, color: "#F0EDE8", textAlign: "center" }}>Importez un design ou décrivez une idée</div>
               </div>
             )}
 
