@@ -133,6 +133,16 @@ ${format === 'video'
 
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
 
+  const labelStyle = { 
+    fontSize: 11, 
+    fontWeight: 700, 
+    color: "#555", 
+    letterSpacing: "1.5px", 
+    textTransform: "uppercase", 
+    display: "block", 
+    marginBottom: 16 
+  };
+
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 60px" }}>
       <style>{`
@@ -153,9 +163,10 @@ ${format === 'video'
         @media (max-width: 950px) { .generator-container { grid-template-columns: 1fr; } }
       `}</style>
       <div className="generator-container">
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* OPTION 1 */}
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Image ou Idée</span>
+            <span style={labelStyle}>1. Image ou Idée</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
               {!image ? (
@@ -175,60 +186,61 @@ ${format === 'video'
             </div>
           </div>
 
-          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none", display: "flex", flexDirection: "column", gap: 20 }}>
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Format de publication</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {FORMATS.map((f) => (
-                  <button key={f.id} className={`option-btn ${format === f.id ? 'active-opt' : ''}`} onClick={() => setFormat(f.id)}
-                    style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: format === f.id ? "#C8FF57" : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{f.icon}</span> {f.label.split(' ')[0]}
-                  </button>
-                ))}
-              </div>
+          {/* OPTION 2 */}
+          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
+            <span style={labelStyle}>2. Format de publication</span>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {FORMATS.map((f) => (
+                <button key={f.id} className={`option-btn ${format === f.id ? 'active-opt' : ''}`} onClick={() => setFormat(f.id)}
+                  style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: format === f.id ? "#C8FF57" : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span>{f.icon}</span> {f.label.split(' ')[0]}
+                </button>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Plateforme</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                {PLATFORMS.map((p) => (
-                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-opt' : ''}`} onClick={() => changePlatform(p.id)}
-                    style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-                    <PlatformIcon id={p.id} size={16} color={platform === p.id ? (p.id === 'tiktok' ? '#fff' : p.color) : "#555"} /> {p.label.split(' ')[0]}
-                  </button>
-                ))}
-              </div>
+          {/* OPTION 3 */}
+          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
+            <span style={labelStyle}>3. Plateforme</span>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {PLATFORMS.map((p) => (
+                <button key={p.id} className={`option-btn ${platform === p.id ? 'active-opt' : ''}`} onClick={() => changePlatform(p.id)}
+                  style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+                  <PlatformIcon id={p.id} size={16} color={platform === p.id ? (p.id === 'tiktok' ? '#fff' : p.color) : "#555"} /> {p.label.split(' ')[0]}
+                </button>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>4. Options</label>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {format === 'video' && (
-                  <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
-                    {DURATIONS.map((d) => (
-                      <button key={d.id} onClick={() => setDuration(d.id)}
-                        style={{ padding: "8px 14px", borderRadius: 10, background: duration === d.id ? "#C8FF57" : "#111115", color: duration === d.id ? "#0D0D0F" : "#555", fontSize: 11, fontWeight: 700 }}>
-                        {d.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {TONES.map((t) => (
-                    <button key={t.id} onClick={() => setTone(t.id)}
-                      style={{ padding: "8px 14px", borderRadius: 10, background: tone === t.id ? "#7B6EF6" : "#111115", color: tone === t.id ? "#fff" : "#555", fontSize: 11, fontWeight: 700 }}>
-                      {t.label}
+          {/* OPTION 4 */}
+          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
+            <span style={labelStyle}>4. Options</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {format === 'video' && (
+                <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
+                  {DURATIONS.map((d) => (
+                    <button key={d.id} onClick={() => setDuration(d.id)}
+                      style={{ padding: "8px 14px", borderRadius: 10, background: duration === d.id ? "#C8FF57" : "#111115", color: duration === d.id ? "#0D0D0F" : "#555", fontSize: 11, fontWeight: 700 }}>
+                      {d.label}
                     </button>
                   ))}
                 </div>
+              )}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {TONES.map((t) => (
+                  <button key={t.id} onClick={() => setTone(t.id)}
+                    style={{ padding: "8px 14px", borderRadius: 10, background: tone === t.id ? "#7B6EF6" : "#111115", color: tone === t.id ? "#fff" : "#555", fontSize: 11, fontWeight: 700 }}>
+                    {t.label}
+                  </button>
+                ))}
               </div>
             </div>
-
-            <button disabled={loading} onClick={generateScript}
-              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800 }}>
-              {loading ? "Génération..." : "✨ Générer le Contenu"}
-            </button>
           </div>
+
+          <button disabled={loading} onClick={generateScript}
+            style={{ padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800, cursor: !loading ? "pointer" : "default" }}>
+            {loading ? "Génération..." : "✨ Générer le Contenu"}
+          </button>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
