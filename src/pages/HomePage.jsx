@@ -7,15 +7,31 @@ const HomePage = () => {
 
   return (
     <div style={{ maxWidth: 900, margin: "0 auto", padding: "60px 24px", textAlign: 'center' }}>
-      <h1 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 42, marginBottom: 16 }}>
+      <style>{`
+        .home-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+        }
+        @media (max-width: 900px) {
+          .home-grid { grid-template-columns: repeat(2, 1fr); }
+          .home-title { font-size: 32px !important; }
+        }
+        @media (max-width: 600px) {
+          .home-grid { grid-template-columns: 1fr; gap: 16px; }
+          .home-title { font-size: 28px !important; }
+          .home-desc { font-size: 14px !important; margin-bottom: 32px !important; }
+        }
+      `}</style>
+
+      <h1 className="home-title" style={{ fontFamily: "'Outfit', sans-serif", fontSize: 42, marginBottom: 16 }}>
         Choisissez votre <span style={{ color: "#C8FF57" }}>Plateforme</span>
       </h1>
-      <p style={{ color: "#888", marginBottom: 48, fontSize: 16 }}>
+      <p className="home-desc" style={{ color: "#888", marginBottom: 48, fontSize: 16 }}>
         Sélectionnez le mode de création pour générer votre script optimisé.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
-        {PLATFORMS.map((p) => (
+      <div className="home-grid">        {PLATFORMS.map((p) => (
           <div 
             key={p.id}
             onClick={() => navigate(`/${p.id}`)}

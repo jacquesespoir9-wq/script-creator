@@ -59,26 +59,34 @@ const Layout = ({ children }) => {
           position: relative;
           z-index: 10;
         }
+        /* Mobile adaptation */
+        @media (max-width: 768px) {
+          .header-nav { padding: 16px 20px !important; }
+          .logo-text { font-size: 16px !important; }
+          .logo-subtext { display: none; }
+          .main-content { padding: 8px !important; }
+          .app-badge { padding: 4px 8px !important; font-size: 10px !important; }
+        }
       `}</style>
       
       {/* Header */}
-      <div className="content-layer glass-panel" style={{ borderBottom: "none", padding: "20px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
+      <div className="content-layer glass-panel header-nav" style={{ borderBottom: "none", padding: "20px 32px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100 }}>
         <div 
           onClick={() => navigate('/')} 
           style={{ display: "flex", alignItems: "center", gap: 12, cursor: 'pointer' }}
         >
           <div style={{ width: 36, height: 36, background: "#C8FF57", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>✏️</div>
           <div>
-            <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 800, letterSpacing: "-0.5px" }}>ScriptGen</div>
-            <div style={{ fontSize: 11, color: "#666", letterSpacing: "0.5px" }}>DESIGN TUTORIALS</div>
+            <div className="logo-text" style={{ fontFamily: "'Outfit', sans-serif", fontSize: 18, fontWeight: 800, letterSpacing: "-0.5px" }}>ScriptGen</div>
+            <div className="logo-subtext" style={{ fontSize: 11, color: "#666", letterSpacing: "0.5px" }}>DESIGN TUTORIALS</div>
           </div>
         </div>
-        <div style={{ fontSize: 12, color: "#444", background: "#141418", border: "1px solid #222", borderRadius: 20, padding: "4px 12px" }}>
+        <div className="app-badge" style={{ fontSize: 12, color: "#444", background: "#141418", border: "1px solid #222", borderRadius: 20, padding: "4px 12px" }}>
           IA Powered
         </div>
       </div>
 
-      <div className="content-layer" style={{ position: "relative", minHeight: "calc(100vh - 80px)" }}>
+      <div className="content-layer main-content" style={{ position: "relative", minHeight: "calc(100vh - 80px)" }}>
         {children}
       </div>
       <InstallBanner />
