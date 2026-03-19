@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+"use client";
+
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../supabaseClient';
@@ -15,7 +17,6 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // On utilise l'ID de la plateforme provenant de l'URL comme source de vérité
   const platform = initialPlatformId;
 
   const handleFile = useCallback((file) => {
@@ -34,12 +35,21 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   }, []);
 
   const changePlatform = (id) => {
-    // Change l'URL, ce qui déclenchera la mise à jour du titre dans PlatformPage
     navigate(`/${id}`);
   };
 
   const generateScript = async () => {
-    if (!imageBase64) return;
+    if (!imageBase64) {
+      setError("Veuillez d'abord importer une image de votre design.");
+      return;
+    }
+    
+    const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
+    if (!API_KEY || API_KEY === "votre_cle_api_ici" || API_KEY.length < 10) {
+      setError("Clé API Google Gemini manquante ou invalide. Veuillez configurer VITE_GOOGLE_GEMINI_API_KEY dans les variables d'environnement.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setScript(null);
@@ -78,9 +88,6 @@ Génère un script structuré avec :
 Sois précis, concis et adapte le script au format ${platformInfo.label} (durée ${duration}s). Le script doit être directement utilisable pour filmer.`;
 
     try {
-      const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
-      if (!API_KEY) throw new Error("Clé API Google Gemini manquante.");
-
       const genAI = new GoogleGenerativeAI(API_KEY);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -97,12 +104,13 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       const response = await result.response;
       const text = response.text();
       
-      if (!text) throw new Error("Réponse vide de l'IA.");
+      if (!text) throw new Error("L'IA n'a pas pu générer de texte. Réessayez avec une autre image.");
       
       setScript(text);
 
-      try {
-        const { error: sbError } = await supabase
+      // Sauvegarde en arrière-plan (ne bloque pas l'affichage du script)
+      if (supabase) {
+        supabase
           .from('scripts')
           .insert([
             {
@@ -110,19 +118,21 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
               platform: platformInfo.label,
               duration: duration,
               tone: tone,
-              image_provided: !!image
+              image_provided: true
             }
-          ]);
-        if (sbError) console.error("Erreur de sauvegarde Supabase:", sbError);
-      } catch (err) {
-        console.error("Erreur insertion Supabase:", err);
+          ])
+          .then(({ error: sbError }) => {
+            if (sbError) console.warn("Note: Le script n'a pas pu être sauvegardé (vérifiez si la table 'scripts' existe).", sbError);
+          })
+          .catch(err => console.warn("Erreur Supabase ignorée:", err));
       }
 
-    } catch (error) {
-      console.error("Détails de l'erreur:", error);
-      setError(error.message.includes("API key not valid") 
-          ? "Clé API Google non valide. Vérifie ta configuration." 
-          : "Erreur IA : " + error.message);
+    } catch (err) {
+      console.error("Erreur lors de la génération:", err);
+      let msg = "Une erreur est survenue lors de la génération.";
+      if (err.message.includes("API key")) msg = "Clé API invalide ou restreinte.";
+      if (err.message.includes("safety")) msg = "Le contenu a été bloqué par les filtres de sécurité de l'IA.";
+      setError(msg + " (Détails : " + err.message + ")");
     } finally {
       setLoading(false);
     }
@@ -238,8 +248,8 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
               </div>
             </div>
 
-            <button disabled={!image || loading} onClick={generateScript}
-              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: image && !loading ? "#C8FF57" : "#1A1A22", border: "none", color: image && !loading ? "#0D0D0F" : "#333", fontWeight: 800, fontSize: 15, cursor: image && !loading ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: image && !loading ? "0 12px 24px rgba(200,255,87,0.2)" : "none" }}>
+            <button disabled={loading} onClick={generateScript}
+              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", border: "none", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800, fontSize: 15, cursor: !loading ? "pointer" : "default", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: !loading ? "0 12px 24px rgba(200,255,87,0.2)" : "none" }}>
               {loading ? "Génération..." : "✨ Générer le Script"}
             </button>
           </div>
@@ -248,7 +258,13 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
         {/* RIGHT PANEL */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div className="glass-panel" style={{ flex: 1, borderRadius: 28, padding: 32, border: "none", minHeight: 500, position: "relative" }}>
-            {!script && !loading && !error && (
+            {error && (
+              <div style={{ background: "rgba(255, 50, 50, 0.1)", border: "1px solid rgba(255, 50, 50, 0.2)", color: "#ff6b6b", padding: 16, borderRadius: 12, fontSize: 13, marginBottom: 20 }}>
+                <strong>Erreur :</strong> {error}
+              </div>
+            )}
+
+            {!script && !loading && (
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 20, opacity: 0.2 }}>
                 <div style={{ fontSize: 64 }}>📄</div>
                 <div style={{ fontSize: 15, fontWeight: 500, color: "#F0EDE8", textAlign: "center" }}>Votre script apparaîtra ici<br /><span style={{ fontSize: 13, color: "#555" }}>Importez un design pour commencer</span></div>
