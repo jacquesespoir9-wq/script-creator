@@ -75,15 +75,21 @@ const InstallBanner = () => {
           .install-notification {
             flex-direction: column;
             text-align: center;
-            gap: 12px;
-            bottom: 20px;
-            width: calc(100% - 40px);
-            max-width: 340px;
-            padding: 20px;
+            gap: 16px;
+            top: 50%;
+            bottom: auto;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: calc(100% - 60px);
+            max-width: 320px;
+            padding: 30px 24px;
+            backdrop-filter: blur(40px) !important;
+            border: 1px solid rgba(200, 255, 87, 0.3) !important;
           }
           .install-notification .install-btn {
             width: 100%;
             justify-content: center;
+            padding: 15px !important;
           }
         }
       `}</style>
