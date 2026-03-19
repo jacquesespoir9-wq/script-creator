@@ -20,7 +20,7 @@ const Footer = () => {
               © {new Date().getFullYear()} ScriptGen. Tous droits réservés.
             </div>
             <div style={{ fontSize: '13px', color: '#888', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 500 }}>
-              Fait avec <Heart size={14} fill="#E1306C" color="#E1306C" /> pour les designers
+              Fait par <span style={{ color: '#C8FF57', fontWeight: 700 }}>Jacques Design</span> <Heart size={14} fill="#E1306C" color="#E1306C" />
             </div>
           </div>
         </div>
