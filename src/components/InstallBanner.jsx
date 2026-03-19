@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Download, X } from 'lucide-react';
 
 const InstallBanner = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -6,9 +7,7 @@ const InstallBanner = () => {
 
   useEffect(() => {
     const handler = (e) => {
-      // Prevent browser default prompt
       e.preventDefault();
-      // Save event so we can trigger it later
       setDeferredPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handler);
@@ -16,12 +15,12 @@ const InstallBanner = () => {
   }, []);
 
   useEffect(() => {
-    // Show the banner exactly 6 seconds after opening the app
+    // Apparition après 6 secondes
     const showTimer = setTimeout(() => {
       setIsVisible(true);
     }, 6000);
 
-    // Hide the banner automatically after being visible for 10 seconds (total 16s)
+    // Disparition après 10 secondes de visibilité (total 16s)
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
     }, 16000);
@@ -34,115 +33,49 @@ const InstallBanner = () => {
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
-      // Show native install prompt
       deferredPrompt.prompt();
-      // Wait for user choice
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        console.log('User accepted the install prompt');
-      } else {
-        console.log('User dismissed the install prompt');
+        setDeferredPrompt(null);
       }
-      // Never prompt again in this session
-      setDeferredPrompt(null);
       setIsVisible(false);
     }
   };
 
-  if (!deferredPrompt || !isVisible) return null;
+  // On ne l'affiche que si l'installation est possible et que le timer est actif
+  if (!isVisible || !deferredPrompt) return null;
 
   return (
-    <>
-      <style>{`
-        .install-notification {
-          position: fixed;
-          bottom: 24px;
-          left: 50%;
-          transform: translateX(-50%);
-          z-index: 9999;
-          color: #F0EDE8;
-          padding: 16px 20px;
-          border-radius: 24px;
-          display: flex;
-          align-items: center;
-          gap: 20px;
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
-          width: max-content;
-          max-width: 90vw;
-        }
-
-        @media (max-width: 600px) {
-          .install-notification {
-            flex-direction: column;
-            text-align: center;
-            gap: 16px;
-            top: 50%;
-            bottom: auto;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: calc(100% - 60px);
-            max-width: 320px;
-            padding: 30px 24px;
-            backdrop-filter: blur(40px) !important;
-            border: 1px solid rgba(200, 255, 87, 0.3) !important;
-          }
-          .install-notification .install-btn {
-            width: 100%;
-            justify-content: center;
-            padding: 15px !important;
-          }
-        }
-      `}</style>
-      
-      <div className="slide-up glass-panel install-notification">
-        <div>
-          <div style={{ fontWeight: 800, fontSize: '15px', fontFamily: "'Outfit', sans-serif" }}>Télécharger ScriptGen</div>
-          <div style={{ fontSize: '13px', opacity: 0.8, fontWeight: 500, marginTop: 2 }}>Installez l'app sur votre téléphone.</div>
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-48px)] max-w-md slide-up">
+      <div className="glass-panel rounded-3xl p-5 flex items-center gap-4 shadow-2xl border border-white/10">
+        <div className="w-12 h-12 rounded-2xl bg-[#C8FF57] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(200,255,87,0.3)]">
+          <Download size={24} color="#0D0D0F" strokeWidth={2.5} />
         </div>
-        <button 
-          onClick={handleInstallClick}
-          className="pill-btn install-btn"
-          style={{
-            background: '#C8FF57',
-            color: '#0D0D0F',
-            border: 'none',
-            padding: '12px 20px',
-            borderRadius: '14px',
-            fontWeight: 800,
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-            fontFamily: "'Outfit', sans-serif",
-            fontSize: '13px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6
-          }}
-        >
-          <span style={{ fontSize: 16 }}>📥</span> Installer l'App
-        </button>
+        
+        <div className="flex-grow">
+          <h4 className="text-sm font-bold font-outfit text-white">Installer ScriptGen</h4>
+          <p className="text-[11px] text-gray-400 font-medium leading-tight mt-0.5">
+            Accédez à vos scripts plus rapidement en installant l'application.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <button 
+            onClick={handleInstallClick}
+            className="bg-[#C8FF57] text-[#0D0D0F] text-[11px] font-extrabold px-4 py-2 rounded-xl hover:scale-105 transition-transform active:scale-95"
+          >
+            INSTALLER
+          </button>
+        </div>
+
         <button 
           onClick={() => setIsVisible(false)}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: '#F0EDE8',
-            opacity: 0.5,
-            cursor: 'pointer',
-            padding: '8px',
-            fontSize: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '8px',
-            position: 'absolute',
-            top: 4,
-            right: 4
-          }}
+          className="absolute -top-2 -right-2 w-7 h-7 bg-[#1A1A22] border border-white/10 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-colors"
         >
-          ✕
+          <X size={14} />
         </button>
       </div>
-    </>
+    </div>
   );
 };
 
