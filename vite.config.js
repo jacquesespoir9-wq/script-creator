@@ -7,16 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'auto',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-        cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true
-      },
-      devOptions: {
-        enabled: false // Désactivé en dev pour éviter les erreurs d'importation virtual:pwa-register
-      },
+      includeAssets: ['favicon.svg', 'icon.svg', 'hero.png'],
       manifest: {
         name: 'ScriptGen - Design Tutorials',
         short_name: 'ScriptGen',
@@ -24,6 +15,9 @@ export default defineConfig({
         theme_color: '#0D0D0F',
         background_color: '#0D0D0F',
         display: 'standalone',
+        orientation: 'portrait',
+        scope: '/',
+        start_url: '/',
         icons: [
           {
             src: '/icon.svg',
@@ -37,6 +31,28 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'google-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 an
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      },
+      devOptions: {
+        enabled: false
       }
     })
   ],
