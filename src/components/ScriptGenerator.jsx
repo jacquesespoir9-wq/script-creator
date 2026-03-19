@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
+import { AlertCircle, Check, Copy, Sparkles, Image as ImageIcon, RefreshCw, X } from 'lucide-react';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -15,8 +16,14 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const [script, setScript] = useState(null);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(true);
 
   const platform = initialPlatformId;
+
+  useEffect(() => {
+    const key = import.meta.env.VITE_OPENROUTER_API_KEY;
+    setHasApiKey(!!key && key !== "");
+  }, []);
 
   const handleFile = useCallback((file) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -33,21 +40,17 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     reader.readAsDataURL(file);
   }, []);
 
-  const changePlatform = (id) => {
-    navigate(`/${id}`);
-  };
-
   const generateScript = async () => {
     if (!imageBase64) {
       setError("Veuillez d'abord importer une image de votre design.");
       return;
     }
     
-    // Récupération de la clé API
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
-    if (!API_KEY || API_KEY === "") {
-      setError("ERREUR (v1.0.2) : Clé API non détectée. 1. Vérifiez le nom 'VITE_OPENROUTER_API_KEY' dans Secrets. 2. Cliquez sur REBUILD. 3. Videz le cache de votre navigateur externe.");
+    if (!API_KEY) {
+      setError("Clé API manquante. Veuillez configurer VITE_OPENROUTER_API_KEY dans les Secrets.");
+      setHasApiKey(false);
       return;
     }
 
@@ -56,11 +59,9 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     setScript(null);
 
     const platformInfo = PLATFORMS.find((p) => p.id === platform);
-    const prompt = `Tu es un expert en création de contenu pour les réseaux sociaux, spécialisé dans les tutoriels de design graphique. 
-Analyse cette image et crée un script complet pour une vidéo tutoriel de design graphique à publier sur ${platformInfo.label}.
-Ton : ${TONES.find((t) => t.id === tone)?.label}
-Durée : ${duration} secondes.
-Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAGS et DESCRIPTION.`;
+    const prompt = `Tu es un expert en création de contenu viral. Analyse ce design et crée un script de tutoriel pour ${platformInfo.label}. 
+Ton : ${TONES.find((t) => t.id === tone)?.label}. Durée : ${duration}s. 
+Structure : ACCROCHE CHOC, ÉTAPES CLÉS, CTA et HASHTAGS.`;
 
     try {
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -77,12 +78,7 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
               "role": "user",
               "content": [
                 { "type": "text", "text": prompt },
-                {
-                  "type": "image_url",
-                  "image_url": {
-                    "url": `data:${imageBase64.type};base64,${imageBase64.data}`
-                  }
-                }
+                { "type": "image_url", "image_url": { "url": `data:${imageBase64.type};base64,${imageBase64.data}` } }
               ]
             }
           ]
@@ -90,24 +86,18 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "Erreur de connexion à l'IA.");
-      }
+      if (!response.ok) throw new Error(data.error?.message || "Erreur API");
 
       const text = data.choices[0]?.message?.content;
-      if (!text) throw new Error("L'IA n'a renvoyé aucun contenu.");
-      
       setScript(text);
 
-      // Sauvegarde silencieuse dans Supabase
-      supabase.from('scripts').insert([{
+      await supabase.from('scripts').insert([{
         content: text,
         platform: platformInfo.label,
         duration: duration,
         tone: tone,
         image_provided: true
-      }]).then(({ error }) => { if (error) console.warn("DB Error:", error); });
+      }]);
 
     } catch (err) {
       setError(err.message);
@@ -117,130 +107,139 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
   };
 
   const copyScript = () => {
-    if (!script) return;
     navigator.clipboard.writeText(script);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const reset = () => {
-    setImage(null);
-    setImageBase64(null);
-    setScript(null);
-    setError(null);
-  };
-
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 60px" }}>
-      <style>{`
-        .generator-container { display: grid; grid-template-columns: 400px 1fr; gap: 32px; }
-        .option-btn { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05) !important; }
-        .active-platform { background: rgba(255,255,255,0.08) !important; border-color: currentColor !important; }
-        @media (max-width: 950px) { .generator-container { grid-template-columns: 1fr; } }
-      `}</style>
-      <div className="generator-container">
-        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Image du Design</span>
-            <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
+    <div className="max-w-6xl mx-auto px-6 pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Sidebar Options */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="glass-panel rounded-[32px] p-6 border-white/5">
+            <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[2px] mb-4">1. Design Source</h3>
             {!image ? (
-              <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
-                <div style={{ border: "2px dashed rgba(255,255,255,0.1)", borderRadius: 16, padding: "40px 20px", textAlign: "center" }} className="hover:border-[#C8FF57]/30">
-                  <div style={{ fontSize: 40, marginBottom: 12 }}>🎨</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#F0EDE8" }}>Importer un design</div>
+              <label className="group cursor-pointer block">
+                <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files[0] && handleFile(e.target.files[0])} />
+                <div className="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center group-hover:border-[#C8FF57]/40 transition-all bg-white/[0.02]">
+                  <ImageIcon className="mx-auto mb-4 text-gray-600 group-hover:text-[#C8FF57] transition-colors" size={40} />
+                  <p className="text-sm font-semibold text-gray-400">Glissez votre design ici</p>
                 </div>
               </label>
             ) : (
-              <div style={{ position: "relative", borderRadius: 16, overflow: "hidden" }}>
-                <img src={image} alt="preview" style={{ width: "100%", height: 240, objectFit: "cover" }} />
-                <button onClick={reset} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", borderRadius: 10, padding: "6px 12px", cursor: "pointer", fontSize: 11 }}>✕ Retirer</button>
+              <div className="relative rounded-2xl overflow-hidden group">
+                <img src={image} alt="Preview" className="w-full h-48 object-cover" />
+                <button onClick={() => setImage(null)} className="absolute top-3 right-3 p-2 bg-black/60 rounded-full text-white hover:bg-red-500 transition-colors">
+                  <X size={16} />
+                </button>
               </div>
             )}
           </div>
 
-          <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none", display: "flex", flexDirection: "column", gap: 20 }}>
+          <div className="glass-panel rounded-[32px] p-6 border-white/5 space-y-6">
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Plateforme</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <h3 className="text-[10px] font-bold text-gray-500 uppercase tracking-[2px] mb-4">2. Configuration</h3>
+              <div className="grid grid-cols-2 gap-2">
                 {PLATFORMS.map((p) => (
-                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-platform' : ''}`} onClick={() => changePlatform(p.id)}
-                    style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
-                    <span>{p.icon}</span> {p.label.split(' ')[0]}
+                  <button key={p.id} onClick={() => navigate(`/${p.id}`)} 
+                    className={`flex items-center gap-2 p-3 rounded-xl text-xs font-bold transition-all ${platform === p.id ? 'bg-white/10 ring-1 ring-inset ring-white/20' : 'bg-white/[0.02] text-gray-500 hover:bg-white/5'}`}
+                    style={{ color: platform === p.id ? p.color : '' }}>
+                    <span className="text-lg">{p.icon}</span> {p.label.split(' ')[0]}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Durée & Ton</label>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
-                  {DURATIONS.map((d) => (
-                    <button key={d.id} onClick={() => setDuration(d.id)}
-                      style={{ padding: "8px 14px", borderRadius: 10, background: duration === d.id ? "#C8FF57" : "#111115", color: duration === d.id ? "#0D0D0F" : "#555", fontSize: 11, fontWeight: 700 }}>
-                      {d.label}
-                    </button>
-                  ))}
-                </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                  {TONES.map((t) => (
-                    <button key={t.id} onClick={() => setTone(t.id)}
-                      style={{ padding: "8px 14px", borderRadius: 10, background: tone === t.id ? "#7B6EF6" : "#111115", color: tone === t.id ? "#fff" : "#555", fontSize: 11, fontWeight: 700 }}>
-                      {t.label}
-                    </button>
-                  ))}
-                </div>
+            <div className="space-y-4">
+              <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+                {DURATIONS.map((d) => (
+                  <button key={d.id} onClick={() => setDuration(d.id)}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all flex-shrink-0 ${duration === d.id ? 'bg-[#C8FF57] text-black' : 'bg-white/5 text-gray-500'}`}>
+                    {d.label}
+                  </button>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {TONES.map((t) => (
+                  <button key={t.id} onClick={() => setTone(t.id)}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase transition-all ${tone === t.id ? 'bg-[#7B6EF6] text-white' : 'bg-white/5 text-gray-500'}`}>
+                    {t.label}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <button disabled={loading} onClick={generateScript}
-              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800, cursor: !loading ? "pointer" : "default" }}>
-              {loading ? "Génération..." : "✨ Générer le Script"}
+            <button onClick={generateScript} disabled={loading || !hasApiKey}
+              className={`w-full py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transition-all active:scale-95 ${loading || !hasApiKey ? 'bg-white/5 text-gray-600' : 'bg-[#C8FF57] text-black shadow-[0_20px_40px_rgba(200,255,87,0.2)] hover:scale-[1.02]'}`}>
+              {loading ? <RefreshCw className="animate-spin" size={20} /> : <Sparkles size={20} />}
+              {loading ? "ANALYSE EN COURS..." : "GÉNÉRER LE SCRIPT"}
             </button>
+
+            {!hasApiKey && (
+              <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex gap-3 items-start">
+                <AlertCircle className="text-red-500 shrink-0" size={18} />
+                <p className="text-[10px] text-red-200 leading-relaxed font-medium">
+                  <strong>ACTION REQUISE :</strong> Ajoutez votre clé <code className="bg-black/30 px-1 rounded">VITE_OPENROUTER_API_KEY</code> dans les Secrets de l'éditeur pour activer l'IA.
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div className="glass-panel" style={{ flex: 1, borderRadius: 28, padding: 32, border: "none", minHeight: 500, position: "relative" }}>
-            {error && (
-              <div style={{ background: "rgba(255, 50, 50, 0.1)", border: "1px solid rgba(255, 50, 50, 0.2)", color: "#ff6b6b", padding: 16, borderRadius: 12, fontSize: 13 }}>
-                {error}
-              </div>
-            )}
-
+        {/* Main Content / Result */}
+        <div className="lg:col-span-8">
+          <div className="glass-panel rounded-[40px] p-8 min-h-[600px] border-white/5 relative overflow-hidden">
             {!script && !loading && (
-              <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.2 }}>
-                <div style={{ fontSize: 64 }}>📄</div>
-                <div style={{ fontSize: 15, color: "#F0EDE8", textAlign: "center" }}>Importez un design pour commencer</div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-10 opacity-20">
+                <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                  <Sparkles size={48} />
+                </div>
+                <h3 className="text-xl font-bold mb-2">Prêt à créer ?</h3>
+                <p className="text-sm max-w-xs">Importez votre design à gauche pour que l'IA puisse l'analyser et générer votre script viral.</p>
               </div>
             )}
 
             {loading && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 24 }}>
-                <div className="animate-spin-slow" style={{ width: 56, height: 56, border: "4px solid rgba(200,255,87,0.1)", borderTopColor: "#C8FF57", borderRadius: "50%" }} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#050508]/50 backdrop-blur-sm z-20">
+                <div className="relative">
+                  <div className="w-20 h-20 border-4 border-[#C8FF57]/10 rounded-full"></div>
+                  <div className="w-20 h-20 border-4 border-t-[#C8FF57] rounded-full animate-spin absolute top-0 left-0"></div>
+                </div>
+                <p className="mt-8 font-black text-xs tracking-[3px] text-[#C8FF57] animate-pulse">L'IA ANALYSE VOTRE DESIGN...</p>
               </div>
             )}
 
             {script && (
-              <div className="slide-up">
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: selectedPlatform?.color, display: "flex", alignItems: "center", justifyContent: "center" }}>{selectedPlatform?.icon}</div>
-                    <div style={{ fontSize: 14, fontWeight: 700 }}>{selectedPlatform?.label}</div>
+              <div className="slide-up space-y-8">
+                <div className="flex items-center justify-between border-b border-white/5 pb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl" style={{ background: selectedPlatform?.color + '20', color: selectedPlatform?.color }}>
+                      {selectedPlatform?.icon}
+                    </div>
+                    <div>
+                      <h2 className="font-bold text-lg">{selectedPlatform?.label}</h2>
+                      <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{duration}s • Ton {tone}</p>
+                    </div>
                   </div>
-                  <button onClick={copyScript} style={{ padding: "8px 16px", borderRadius: 12, background: copied ? "#C8FF57" : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#F0EDE8", fontSize: 12, fontWeight: 700 }}>
-                    {copied ? "✓ Copié" : "⧉ Copier"}
+                  <button onClick={copyScript} className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-xs transition-all ${copied ? 'bg-[#C8FF57] text-black' : 'bg-white/5 hover:bg-white/10'}`}>
+                    {copied ? <Check size={16} /> : <Copy size={16} />}
+                    {copied ? "COPIÉ !" : "COPIER LE SCRIPT"}
                   </button>
                 </div>
-                <div style={{ fontSize: 14, color: "#C8C5C0", lineHeight: 1.8, whiteSpace: "pre-wrap" }}
-                  dangerouslySetInnerHTML={{
-                    __html: script
-                      .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#F0EDE8;display:block;margin-top:16px;font-size:15px">$1</strong>')
-                      .replace(/\*(.*?)\*/g, '<em style="color:#C8FF57;font-style:normal;font-weight:600">$1</em>')
-                  }}
-                />
+
+                <div className="prose prose-invert max-w-none">
+                  <div className="text-gray-300 leading-relaxed whitespace-pre-wrap font-medium"
+                    dangerouslySetInnerHTML={{
+                      __html: script
+                        .replace(/\*\*(.*?)\*\*/g, '<h4 class="text-[#C8FF57] font-black text-sm tracking-wider uppercase mt-8 mb-3">$1</h4>')
+                        .replace(/\*(.*?)\*/g, '<span class="text-white font-bold">$1</span>')
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
