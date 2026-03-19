@@ -97,7 +97,7 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
           "X-Title": "ScriptGen",
         },
         body: JSON.stringify({
-          "model": "google/gemini-flash-1.5",
+          "model": "google/gemini-2.0-flash-001",
           "messages": [
             {
               "role": "user",
@@ -118,7 +118,6 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       const data = await response.json();
 
       if (!response.ok) {
-        // On affiche l'erreur précise renvoyée par OpenRouter
         const errorMsg = data.error?.message || `Erreur API (${response.status})`;
         throw new Error(errorMsg);
       }
