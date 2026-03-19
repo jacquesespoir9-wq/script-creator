@@ -18,3 +18,8 @@ export const TONES = [
   { id: "energetic", label: "Énergique" },
   { id: "educational", label: "Pédagogique" },
 ];
+
+export const FORMATS = [
+  { id: "video", label: "Vidéo", icon: "🎥" },
+  { id: "image", label: "Image / Carrousel", icon: "🖼️" },
+];

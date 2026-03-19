@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PLATFORMS, DURATIONS, TONES } from '../constants';
+import { PLATFORMS, DURATIONS, TONES, FORMATS } from '../constants';
 import { supabase } from '../integrations/supabase/client';
 import PlatformIcon from './PlatformIcon';
 
@@ -13,6 +13,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const [ideaText, setIdeaText] = useState("");
   const [duration, setDuration] = useState("60");
   const [tone, setTone] = useState("educational");
+  const [format, setFormat] = useState("video");
   const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(null);
   const [error, setError] = useState(null);
@@ -48,7 +49,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
     if (!API_KEY || API_KEY === "") {
-      setError("ERREUR (v1.0.3) : Clé API non détectée. Vérifiez vos Secrets et faites un REBUILD.");
+      setError("ERREUR : Clé API non détectée. Vérifiez vos Secrets et faites un REBUILD.");
       return;
     }
 
@@ -57,33 +58,28 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     setScript(null);
 
     const platformInfo = PLATFORMS.find((p) => p.id === platform);
+    const formatLabel = FORMATS.find(f => f.id === format)?.label;
     
-    // Construction du prompt dynamique
-    let userContent = [];
     let systemPrompt = `Tu es un expert en création de contenu pour les réseaux sociaux, spécialisé dans les tutoriels de design graphique. 
-Crée un script complet pour une vidéo tutoriel à publier sur ${platformInfo.label}.
-Ton : ${TONES.find((t) => t.id === tone)?.label}
-Durée : ${duration} secondes.
-Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAGS et DESCRIPTION.`;
+Crée un contenu optimisé pour ${platformInfo.label}.
+Format de publication : ${formatLabel}.
+Ton : ${TONES.find((t) => t.id === tone)?.label}.
+${format === 'video' ? `Durée estimée : ${duration} secondes.` : ''}
 
+CONSIGNES SPÉCIFIQUES :
+${format === 'video' 
+  ? "Génère un script vidéo complet avec ACCROCHE, INTRODUCTION, ÉTAPES DE RÉALISATION, CTA, HASHTAGS et DESCRIPTION." 
+  : "Génère une légende captivante pour un post image/carrousel, avec une structure claire, des conseils textuels, un CTA, des HASHTAGS et une DESCRIPTION."
+}`;
+
+    let userContent = [];
     if (ideaText.trim()) {
-      userContent.push({ 
-        type: "text", 
-        text: `Voici l'idée du design à expliquer : ${ideaText.trim()}` 
-      });
-    } else {
-      userContent.push({ 
-        type: "text", 
-        text: "Analyse cette image de design et crée un tutoriel basé sur celle-ci." 
-      });
+      userContent.push({ type: "text", text: `Idée du design : ${ideaText.trim()}` });
     }
-
     if (imageBase64) {
       userContent.push({
         type: "image_url",
-        image_url: {
-          url: `data:${imageBase64.type};base64,${imageBase64.data}`
-        }
+        image_url: { url: `data:${imageBase64.type};base64,${imageBase64.data}` }
       });
     }
 
@@ -105,23 +101,20 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
       });
 
       const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error?.message || "Erreur de connexion à l'IA.");
-      }
+      if (!response.ok) throw new Error(data.error?.message || "Erreur IA.");
 
       const text = data.choices[0]?.message?.content;
-      if (!text) throw new Error("L'IA n'a renvoyé aucun contenu.");
+      if (!text) throw new Error("Aucun contenu généré.");
       
       setScript(text);
 
-      // Sauvegarde dans Supabase
       supabase.from('scripts').insert([{
         content: text,
         platform: platformInfo.label,
-        duration: duration,
+        duration: format === 'video' ? duration : null,
         tone: tone,
-        image_provided: !!imageBase64
+        image_provided: !!imageBase64,
+        format: format
       }]).then(({ error }) => { if (error) console.warn("DB Error:", error); });
 
     } catch (err) {
@@ -138,14 +131,6 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const reset = () => {
-    setImage(null);
-    imageBase64(null);
-    setIdeaText("");
-    setScript(null);
-    setError(null);
-  };
-
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
 
   return (
@@ -153,7 +138,7 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
       <style>{`
         .generator-container { display: grid; grid-template-columns: 400px 1fr; gap: 32px; }
         .option-btn { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05) !important; }
-        .active-platform { background: rgba(255,255,255,0.08) !important; border-color: currentColor !important; }
+        .active-opt { background: rgba(255,255,255,0.08) !important; border-color: currentColor !important; }
         .text-area-custom {
           width: 100%;
           background: rgba(255,255,255,0.03);
@@ -164,10 +149,6 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
           font-size: 14px;
           resize: none;
           outline: none;
-          transition: border-color 0.2s ease;
-        }
-        .text-area-custom:focus {
-          border-color: rgba(200, 255, 87, 0.5);
         }
         @media (max-width: 950px) { .generator-container { grid-template-columns: 1fr; } }
       `}</style>
@@ -175,14 +156,13 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none" }}>
             <span style={{ fontSize: 11, fontWeight: 700, color: "#555", letterSpacing: "1.5px", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Image ou Idée</span>
-            
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
               {!image ? (
                 <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
                   <div style={{ border: "2px dashed rgba(255,255,255,0.1)", borderRadius: 16, padding: "24px 20px", textAlign: "center" }} className="hover:border-[#C8FF57]/30">
                     <div style={{ fontSize: 32, marginBottom: 8 }}>🎨</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#F0EDE8" }}>Importer un design</div>
+                    <div style={{ fontSize: 13, fontWeight: 600 }}>Importer un design</div>
                   </div>
                 </label>
               ) : (
@@ -191,25 +171,28 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
                   <button onClick={() => { setImage(null); setImageBase64(null); }} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", borderRadius: 10, padding: "6px 12px", cursor: "pointer", fontSize: 11 }}>✕</button>
                 </div>
               )}
-
-              <div style={{ position: "relative" }}>
-                <textarea 
-                  className="text-area-custom"
-                  placeholder="Ou décrivez votre idée de design ici... (ex: Comment créer un logo minimaliste sur Canva)"
-                  rows={4}
-                  value={ideaText}
-                  onChange={(e) => setIdeaText(e.target.value)}
-                />
-              </div>
+              <textarea className="text-area-custom" placeholder="Ou décrivez votre idée..." rows={3} value={ideaText} onChange={(e) => setIdeaText(e.target.value)} />
             </div>
           </div>
 
           <div className="glass-panel" style={{ borderRadius: 24, padding: 24, border: "none", display: "flex", flexDirection: "column", gap: 20 }}>
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Plateforme</label>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>2. Format de publication</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                {FORMATS.map((f) => (
+                  <button key={f.id} className={`option-btn ${format === f.id ? 'active-opt' : ''}`} onClick={() => setFormat(f.id)}
+                    style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: format === f.id ? "#C8FF57" : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>{f.icon}</span> {f.label.split(' ')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Plateforme</label>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {PLATFORMS.map((p) => (
-                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-platform' : ''}`} onClick={() => changePlatform(p.id)}
+                  <button key={p.id} className={`option-btn ${platform === p.id ? 'active-opt' : ''}`} onClick={() => changePlatform(p.id)}
                     style={{ padding: "12px 8px", borderRadius: 14, background: "#0F0F13", color: platform === p.id ? p.color : "#555", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
                     <PlatformIcon id={p.id} size={16} color={platform === p.id ? (p.id === 'tiktok' ? '#fff' : p.color) : "#555"} /> {p.label.split(' ')[0]}
                   </button>
@@ -218,16 +201,18 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
             </div>
 
             <div>
-              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>3. Durée & Ton</label>
+              <label style={{ fontSize: 11, fontWeight: 700, color: "#555", display: "block", marginBottom: 12 }}>4. Options</label>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
-                  {DURATIONS.map((d) => (
-                    <button key={d.id} onClick={() => setDuration(d.id)}
-                      style={{ padding: "8px 14px", borderRadius: 10, background: duration === d.id ? "#C8FF57" : "#111115", color: duration === d.id ? "#0D0D0F" : "#555", fontSize: 11, fontWeight: 700 }}>
-                      {d.label}
-                    </button>
-                  ))}
-                </div>
+                {format === 'video' && (
+                  <div style={{ display: "flex", gap: 6, overflowX: "auto" }}>
+                    {DURATIONS.map((d) => (
+                      <button key={d.id} onClick={() => setDuration(d.id)}
+                        style={{ padding: "8px 14px", borderRadius: 10, background: duration === d.id ? "#C8FF57" : "#111115", color: duration === d.id ? "#0D0D0F" : "#555", fontSize: 11, fontWeight: 700 }}>
+                        {d.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                   {TONES.map((t) => (
                     <button key={t.id} onClick={() => setTone(t.id)}
@@ -240,33 +225,26 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
             </div>
 
             <button disabled={loading} onClick={generateScript}
-              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800, cursor: !loading ? "pointer" : "default" }}>
-              {loading ? "Génération..." : "✨ Générer le Script"}
+              style={{ marginTop: 8, padding: "18px", borderRadius: 16, background: !loading ? "#C8FF57" : "#1A1A22", color: !loading ? "#0D0D0F" : "#333", fontWeight: 800 }}>
+              {loading ? "Génération..." : "✨ Générer le Contenu"}
             </button>
           </div>
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <div className="glass-panel" style={{ flex: 1, borderRadius: 28, padding: 32, border: "none", minHeight: 500, position: "relative" }}>
-            {error && (
-              <div style={{ background: "rgba(255, 50, 50, 0.1)", border: "1px solid rgba(255, 50, 50, 0.2)", color: "#ff6b6b", padding: 16, borderRadius: 12, fontSize: 13 }}>
-                {error}
-              </div>
-            )}
-
+            {error && <div style={{ background: "rgba(255, 50, 50, 0.1)", color: "#ff6b6b", padding: 16, borderRadius: 12, fontSize: 13 }}>{error}</div>}
             {!script && !loading && (
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.2 }}>
                 <div style={{ fontSize: 64 }}>📄</div>
-                <div style={{ fontSize: 15, color: "#F0EDE8", textAlign: "center" }}>Importez un design ou décrivez une idée</div>
+                <div style={{ fontSize: 15, textAlign: "center" }}>Configurez votre post pour commencer</div>
               </div>
             )}
-
             {loading && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 24 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%" }}>
                 <div className="animate-spin-slow" style={{ width: 56, height: 56, border: "4px solid rgba(200,255,87,0.1)", borderTopColor: "#C8FF57", borderRadius: "50%" }} />
               </div>
             )}
-
             {script && (
               <div className="slide-up">
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
@@ -274,7 +252,7 @@ Génère un script structuré avec ACCROCHE, INTRODUCTION, CONTENU, CTA, HASHTAG
                     <div style={{ width: 32, height: 32, borderRadius: 8, background: selectedPlatform?.color, display: "flex", alignItems: "center", justifyContent: "center", color: "#fff" }}>
                       <PlatformIcon id={selectedPlatform?.id} size={18} color={selectedPlatform?.id === 'tiktok' ? '#fff' : '#fff'} />
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700 }}>{selectedPlatform?.label}</div>
+                    <div style={{ fontSize: 14, fontWeight: 700 }}>{selectedPlatform?.label} ({formatLabel})</div>
                   </div>
                   <button onClick={copyScript} style={{ padding: "8px 16px", borderRadius: 12, background: copied ? "#C8FF57" : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#F0EDE8", fontSize: 12, fontWeight: 700 }}>
                     {copied ? "✓ Copié" : "⧉ Copier"}
