@@ -46,7 +46,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     
     if (!API_KEY) {
-      setError("La clé API n'est pas détectée dans les Secrets.");
+      setError("ERREUR : La clé API n'est pas détectée. Avez-vous bien cliqué sur 'Rebuild' après avoir ajouté le Secret ?");
       return;
     }
 
@@ -118,12 +118,14 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error?.message || `Erreur API (${response.status})`);
+        // On affiche l'erreur précise renvoyée par OpenRouter
+        const errorMsg = data.error?.message || `Erreur API (${response.status})`;
+        throw new Error(errorMsg);
       }
 
       const text = data.choices[0]?.message?.content;
       
-      if (!text) throw new Error("L'IA n'a pas pu générer de texte.");
+      if (!text) throw new Error("L'IA n'a pas pu générer de texte. Vérifiez votre quota OpenRouter.");
       
       setScript(text);
 
