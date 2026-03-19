@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
+import { supabase } from '../supabaseClient';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const [image, setImage] = useState(null);
@@ -109,7 +110,27 @@ Sois précis, concis et adapte le script au format ${platformInfo.label} (durée
       const data = await response.json();
       const text = data.choices?.[0]?.message?.content || "";
       if (!text) throw new Error("Réponse vide de l'API. (Vérifiez le modèle sélectionné)");
+      
       setScript(text);
+
+      // Save to Supabase
+      try {
+        const { error: sbError } = await supabase
+          .from('scripts')
+          .insert([
+            {
+              content: text,
+              platform: platformInfo.label,
+              duration: duration,
+              tone: tone,
+              image_provided: !!image
+            }
+          ]);
+        if (sbError) console.error("Erreur de sauvegarde Supabase:", sbError);
+      } catch (err) {
+        console.error("Erreur insertion Supabase:", err);
+      }
+
     } catch (error) {
       console.error("Détails de l'erreur:", error);
       setError(error.message.includes("fetch") || error.message.includes("Network") 
