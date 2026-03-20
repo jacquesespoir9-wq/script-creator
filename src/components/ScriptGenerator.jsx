@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../integrations/supabase/client';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import PlatformIcon from './PlatformIcon';
 
