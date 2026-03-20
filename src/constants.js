@@ -7,12 +7,12 @@ export const PLATFORMS = [
 ];
 
 export const SOCIAL_PLATFORMS = [
-  { id: "tiktok", label: "TikTok" },
-  { id: "instagram", label: "Instagram" },
-  { id: "facebook", label: "Facebook" },
-  { id: "youtube", label: "YouTube" },
-  { id: "linkedin", label: "LinkedIn" },
-  { id: "twitter", label: "Twitter / X" },
+  { id: "tiktok", label: "TikTok", brandColor: "#ff0050" },
+  { id: "instagram", label: "Instagram", brandColor: "#E1306C" },
+  { id: "facebook", label: "Facebook", brandColor: "#1877F2" },
+  { id: "youtube", label: "YouTube", brandColor: "#FF0000" },
+  { id: "linkedin", label: "LinkedIn", brandColor: "#0A66C2" },
+  { id: "twitter", label: "Twitter / X", brandColor: "#1DA1F2" },
 ];
 
 export const DURATIONS = [

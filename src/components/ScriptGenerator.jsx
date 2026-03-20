@@ -29,14 +29,14 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
 
   const platform = initialPlatformId;
 
-  const getSocialIcon = (id, size = 16) => {
+  const getSocialIcon = (id, color, size = 18) => {
     switch (id) {
-      case 'tiktok': return <Music2 size={size} />;
-      case 'instagram': return <Instagram size={size} />;
-      case 'facebook': return <Facebook size={size} />;
-      case 'youtube': return <Youtube size={size} />;
-      case 'linkedin': return <Linkedin size={size} />;
-      case 'twitter': return <Twitter size={size} />;
+      case 'tiktok': return <Music2 size={size} color={color} />;
+      case 'instagram': return <Instagram size={size} color={color} />;
+      case 'facebook': return <Facebook size={size} color={color} />;
+      case 'youtube': return <Youtube size={size} color={color} />;
+      case 'linkedin': return <Linkedin size={size} color={color} />;
+      case 'twitter': return <Twitter size={size} color={color} />;
       default: return null;
     }
   };
@@ -237,25 +237,29 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>DESTINATION</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: 'center' }}>
-                  {SOCIAL_PLATFORMS.map((s) => (
-                    <button key={s.id} onClick={() => setSocialPlatform(s.id)}
-                      style={{ 
-                        padding: "10px 14px", 
-                        borderRadius: 12, 
-                        background: socialPlatform === s.id ? selectedPlatform.color : "#111115", 
-                        color: socialPlatform === s.id ? "#0D0D0F" : "#666", 
-                        border: 'none', 
-                        fontSize: 11, 
-                        fontWeight: 800, 
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 8
-                      }}>
-                      {getSocialIcon(s.id)}
-                      {s.label}
-                    </button>
-                  ))}
+                  {SOCIAL_PLATFORMS.map((s) => {
+                    const isActive = socialPlatform === s.id;
+                    return (
+                      <button key={s.id} onClick={() => setSocialPlatform(s.id)}
+                        style={{ 
+                          padding: "10px 14px", 
+                          borderRadius: 12, 
+                          background: isActive ? `${s.brandColor}22` : "#111115", 
+                          color: isActive ? s.brandColor : "#666", 
+                          border: isActive ? `1px solid ${s.brandColor}44` : '1px solid transparent', 
+                          fontSize: 11, 
+                          fontWeight: 800, 
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 8,
+                          transition: 'all 0.2s'
+                        }}>
+                        {getSocialIcon(s.id, isActive ? s.brandColor : "#666")}
+                        {s.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
