@@ -7,12 +7,10 @@ import HistoryPage from './pages/HistoryPage';
 import MotivationPage from './pages/MotivationPage';
 import CopywriterPage from './pages/CopywriterPage';
 import DescriptionPage from './pages/DescriptionPage';
-import Navbar from './components/Navbar';
 
 function App() {
   return (
     <Router>
-      <Navbar />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />

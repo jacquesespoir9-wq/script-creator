@@ -13,8 +13,8 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-48px)] max-w-lg">
-      <div className="glass-panel rounded-3xl px-4 py-3 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10">
+    <div className="relative z-10 w-full max-w-lg mx-auto px-6 mb-8">
+      <div className="glass-panel rounded-3xl px-4 py-3 flex items-center justify-around border-white/10">
         {navLinks.map((link) => {
           const isActive = location.pathname === link.path;
           return (
@@ -25,9 +25,8 @@ const Navbar = () => {
                 isActive ? 'text-[#C8FF57]' : 'text-gray-500 hover:text-white'
               }`}
             >
-              {/* Active Indicator Glow */}
               {isActive && (
-                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#C8FF57]/20 blur-xl rounded-full" />
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#C8FF57]/10 blur-xl rounded-full" />
               )}
               
               <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
@@ -38,7 +37,6 @@ const Navbar = () => {
                 {link.label}
               </span>
 
-              {/* Active Dot */}
               {isActive && (
                 <div className="absolute -bottom-1 w-1 h-1 bg-[#C8FF57] rounded-full shadow-[0_0_10px_#C8FF57]" />
               )}
@@ -46,7 +44,7 @@ const Navbar = () => {
           );
         })}
       </div>
-    </nav>
+    </div>
   );
 };
 
