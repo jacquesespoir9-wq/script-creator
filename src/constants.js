@@ -6,6 +6,14 @@ export const PLATFORMS = [
   { id: "desc", label: "Description", icon: "📝", color: "#FF6B6B" },
 ];
 
+export const SOCIAL_PLATFORMS = [
+  { id: "tiktok", label: "TikTok", icon: "📱" },
+  { id: "instagram", label: "Instagram", icon: "📸" },
+  { id: "youtube", label: "YouTube", icon: "🎥" },
+  { id: "linkedin", label: "LinkedIn", icon: "💼" },
+  { id: "twitter", label: "Twitter / X", icon: "🐦" },
+];
+
 export const DURATIONS = [
   { id: "30", label: "30 sec" },
   { id: "60", label: "1 min" },

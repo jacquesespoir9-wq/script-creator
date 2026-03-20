@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PLATFORMS, DURATIONS, TONES } from '../constants';
+import { PLATFORMS, SOCIAL_PLATFORMS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
 import PlatformIcon from './PlatformIcon';
 import { Video, Image as ImageIcon } from 'lucide-react';
@@ -12,6 +12,7 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
   const [ideaText, setIdeaText] = useState("");
   const [tone, setTone] = useState("educational");
   const [format, setFormat] = useState("video"); // 'video' or 'image'
+  const [socialPlatform, setSocialPlatform] = useState("tiktok");
   const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(null);
   const [error, setError] = useState(null);
@@ -51,12 +52,13 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
     setScript(null);
 
     const platformInfo = PLATFORMS.find((p) => p.id === platform) || PLATFORMS[0];
+    const socialInfo = SOCIAL_PLATFORMS.find((s) => s.id === socialPlatform);
     const toneLabel = TONES.find((t) => t.id === tone)?.label;
 
     let specializedPrompt = "";
     const formatContext = format === 'video' 
-      ? "Le contenu doit être structuré comme un script vidéo dynamique (Accroche, Corps, Conclusion) avec des indications de rythme." 
-      : "Le contenu doit être structuré pour une publication image/carrousel (Légende percutante, texte sur l'image, hashtags).";
+      ? `Le contenu doit être structuré comme un script vidéo dynamique optimisé pour ${socialInfo.label} (Accroche, Corps, Conclusion) avec des indications de rythme.` 
+      : `Le contenu doit être structuré pour une publication image/carrousel sur ${socialInfo.label} (Légende percutante, texte sur l'image, hashtags).`;
 
     if (platform === 'design') {
       specializedPrompt = `Tu es un expert en Design Graphique. ${formatContext} Analyse l'idée et crée un contenu pour reproduire ce design.`;
@@ -71,6 +73,7 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
     }
 
     const fullPrompt = `CATÉGORIE : ${platformInfo.label}
+DESTINATION : ${socialInfo.label}
 FORMAT : ${format.toUpperCase()}
 TONALITÉ : ${toneLabel}
 
@@ -209,9 +212,35 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
             <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>2. Options</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               
+              {/* Destination Selector */}
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>DESTINATION</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: 'center' }}>
+                  {SOCIAL_PLATFORMS.map((s) => (
+                    <button key={s.id} onClick={() => setSocialPlatform(s.id)}
+                      style={{ 
+                        padding: "10px 14px", 
+                        borderRadius: 12, 
+                        background: socialPlatform === s.id ? selectedPlatform.color : "#111115", 
+                        color: socialPlatform === s.id ? "#0D0D0F" : "#666", 
+                        border: 'none', 
+                        fontSize: 11, 
+                        fontWeight: 800, 
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6
+                      }}>
+                      <span>{s.icon}</span>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Format Selector */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>FORMAT DE PUBLICATION</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>FORMAT</div>
                 <div style={{ display: "flex", gap: 10, justifyContent: 'center' }}>
                   <button 
                     onClick={() => setFormat("video")}
