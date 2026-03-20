@@ -1,179 +1,137 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight, Zap, LayoutGrid, PenTool, MessageSquare } from 'lucide-react';
-import { PLATFORMS } from '../constants';
-import PlatformIcon from '../components/PlatformIcon';
+import { Sparkles, ShieldCheck, Zap, Target, Cpu, Crown } from 'lucide-react';
 
 const HomePage = () => {
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 overflow-hidden bg-[#050508]">
-      {/* Background Ambient Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#C8FF57]/10 rounded-full blur-[140px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] bg-[#7B6EF6]/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDelay: '3s' }}></div>
-      
-      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center">
-        {/* Premium Badge */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="premium-badge mb-10"
-        >
-          <div className="badge-glow"></div>
-          <Sparkles size={14} className="text-[#C8FF57] mr-2" />
-          <span className="tracking-[0.2em]">L'ÉLITE DE LA CRÉATION IA</span>
-        </motion.div>
+    <div className="relative min-h-screen bg-[#050508] text-white overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[800px] h-[800px] bg-[#C8FF57]/5 rounded-full blur-[150px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-[#7B6EF6]/5 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
 
-        {/* Hero Title */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-center mb-16"
-        >
-          <h1 className="font-outfit text-6xl md:text-8xl font-black leading-[1.1] tracking-tighter mb-8">
-            <span className="text-white block">L'ingénierie du</span>
-            <span className="text-[#C8FF57] drop-shadow-[0_0_30px_rgba(200,255,87,0.3)]">viral absolu</span>
-          </h1>
-          <p className="text-gray-400 text-lg md:text-2xl max-w-2xl mx-auto font-medium leading-relaxed opacity-80">
-            Dominez les algorithmes avec une précision chirurgicale. <br className="hidden md:block" />
-            L'intelligence artificielle au service de votre influence.
-          </p>
-        </motion.div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 pt-32 pb-40">
+        {/* Hero Section */}
+        <div className="flex flex-col items-center text-center mb-32">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8"
+          >
+            <Crown size={14} className="text-[#C8FF57]" />
+            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-gray-400">L'Excellence par Jacques Design</span>
+          </motion.div>
 
-        {/* Main Action Grid */}
-        <motion.div 
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-8"
-        >
-          {PLATFORMS.map((platform) => (
-            <Link 
-              key={platform.id} 
-              to={platform.id === 'design' ? '/design' : platform.id === 'motivation' ? '/motivation' : platform.id === 'copy' ? '/copy' : '/desc'}
-              className="premium-card group"
-            >
-              <div className="card-border"></div>
-              <div className="card-content">
-                <div 
-                  className="icon-wrapper mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500"
-                  style={{ color: platform.color }}
-                >
-                  <PlatformIcon id={platform.id} size={32} />
-                  <div className="icon-glow" style={{ backgroundColor: platform.color }}></div>
-                </div>
-                
-                <h3 className="text-2xl font-bold font-outfit mb-2 text-white/90 group-hover:text-white transition-colors">
-                  {platform.label}
-                </h3>
-                
-                <p className="text-gray-500 text-sm font-medium mb-8 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
-                  Optimisé pour la viralité {platform.label}.
-                </p>
-                
-                <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#C8FF57] opacity-60 group-hover:opacity-100 transition-all">
-                  ACCÉDER <ArrowRight size={14} className="transition-transform group-hover:translate-x-2" />
-                </div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="font-outfit text-6xl md:text-9xl font-black tracking-tighter leading-[0.9] mb-10"
+          >
+            L'ART DE LA <br />
+            <span className="text-[#C8FF57] drop-shadow-[0_0_40px_rgba(200,255,87,0.4)]">VIRALITÉ</span>
+          </motion.h1>
+
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-gray-400 text-lg md:text-2xl max-w-3xl font-medium leading-relaxed"
+          >
+            ScriptGen n'est pas un simple outil. C'est une intelligence supérieure conçue pour transformer chaque pixel de votre design en un levier de croissance exponentielle.
+          </motion.p>
+        </div>
+
+        {/* Philosophy Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-40">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="glass-card p-10 rounded-[40px] border border-white/5"
+          >
+            <div className="w-14 h-14 bg-[#C8FF57]/10 rounded-2xl flex items-center justify-center mb-8 text-[#C8FF57]">
+              <Cpu size={28} />
+            </div>
+            <h3 className="text-2xl font-bold font-outfit mb-4">Intelligence Cognitive</h3>
+            <p className="text-gray-500 leading-relaxed">
+              Nos algorithmes analysent la structure visuelle de vos créations pour en extraire l'essence narrative la plus percutante.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="glass-card p-10 rounded-[40px] border border-white/5 bg-white/[0.02]"
+          >
+            <div className="w-14 h-14 bg-[#7B6EF6]/10 rounded-2xl flex items-center justify-center mb-8 text-[#7B6EF6]">
+              <Target size={28} />
+            </div>
+            <h3 className="text-2xl font-bold font-outfit mb-4">Précision Algorithmique</h3>
+            <p className="text-gray-500 leading-relaxed">
+              Chaque mot est pesé, chaque phrase est sculptée pour résonner avec les mécanismes de rétention des plateformes sociales.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="glass-card p-10 rounded-[40px] border border-white/5"
+          >
+            <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center mb-8 text-white">
+              <ShieldCheck size={28} />
+            </div>
+            <h3 className="text-2xl font-bold font-outfit mb-4">Standard Premium</h3>
+            <p className="text-gray-500 leading-relaxed">
+              Une qualité de rédaction digne des plus grandes agences de copywriting, accessible instantanément.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Narrative Section */}
+        <div className="relative rounded-[60px] overflow-hidden bg-gradient-to-br from-white/[0.03] to-transparent border border-white/5 p-12 md:p-24">
+          <div className="absolute top-0 right-0 p-12 opacity-10">
+            <Sparkles size={200} className="text-[#C8FF57]" />
+          </div>
+          
+          <div className="max-w-3xl relative z-10">
+            <h2 className="font-outfit text-4xl md:text-6xl font-black mb-8 leading-tight">
+              Redéfinissez les limites de votre <span className="text-[#C8FF57]">influence</span>.
+            </h2>
+            <p className="text-gray-400 text-xl mb-12 leading-relaxed">
+              Dans un monde saturé de contenu, la différence ne se fait plus sur l'image seule, mais sur l'histoire qu'elle raconte. ScriptGen fusionne le design et le verbe pour créer un impact indélébile.
+            </p>
+            <div className="flex flex-wrap gap-6">
+              <div className="flex items-center gap-3 text-[#C8FF57] font-bold tracking-widest text-xs uppercase">
+                <Zap size={16} /> Performance Maximale
               </div>
-            </Link>
-          ))}
-        </motion.div>
+              <div className="flex items-center gap-3 text-white/40 font-bold tracking-widest text-xs uppercase">
+                <Zap size={16} /> Design-First Approach
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <style>{`
-        .premium-badge {
-          position: relative;
-          display: flex;
-          align-items: center;
-          padding: 8px 24px;
-          background: rgba(255, 255, 255, 0.03);
-          backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          border-radius: 100px;
-          font-size: 10px;
-          font-weight: 900;
-          color: #C8FF57;
-          overflow: hidden;
-        }
-
-        .badge-glow {
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(200, 255, 87, 0.2), transparent);
-          animation: shimmer 3s infinite;
-        }
-
-        .premium-card {
-          position: relative;
-          height: 320px;
-          border-radius: 32px;
+        .glass-card {
           background: rgba(255, 255, 255, 0.01);
-          backdrop-filter: blur(40px);
-          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-          cursor: pointer;
-          overflow: hidden;
+          backdrop-filter: blur(20px);
+          transition: all 0.4s ease;
         }
-
-        .card-content {
-          position: relative;
-          z-index: 2;
-          height: 100%;
-          padding: 40px;
-          display: flex;
-          flex-direction: column;
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          border-radius: 32px;
-        }
-
-        .card-border {
-          position: absolute;
-          inset: 0;
-          border-radius: 32px;
-          padding: 1px;
-          background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
-          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite: xor;
-          mask-composite: exclude;
-          transition: all 0.6s;
-        }
-
-        .premium-card:hover {
-          transform: translateY(-12px) scale(1.02);
+        .glass-card:hover {
           background: rgba(255, 255, 255, 0.03);
-          box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+          transform: translateY(-10px);
+          border-color: rgba(200, 255, 87, 0.2);
         }
-
-        .premium-card:hover .card-border {
-          background: linear-gradient(135deg, #C8FF57, transparent, #7B6EF6);
-          opacity: 0.5;
-        }
-
-        .icon-wrapper {
-          position: relative;
-          width: fit-content;
-        }
-
-        .icon-glow {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          filter: blur(25px);
-          opacity: 0.2;
-          z-index: -1;
-        }
-
-        @keyframes shimmer {
-          0% { left: -100%; }
-          100% { left: 100%; }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.05; transform: scale(1); }
+          50% { opacity: 0.1; transform: scale(1.05); }
         }
       `}</style>
     </div>
