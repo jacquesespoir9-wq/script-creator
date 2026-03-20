@@ -31,7 +31,7 @@ const HomePage = () => {
           </p>
         </div>
 
-        {/* Main Action Grid */}
+        {/* Main Action Grid - Centered Items */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-12 slide-up" style={{ animationDelay: '0.3s' }}>
           {PLATFORMS.map((platform) => (
             <Link 
@@ -49,15 +49,15 @@ const HomePage = () => {
                   <div className="icon-glow" style={{ backgroundColor: platform.color }}></div>
                 </div>
                 
-                <h3 className="text-xl font-bold font-outfit mb-2 text-white/90 group-hover:text-white transition-colors">
+                <h3 className="text-xl font-bold font-outfit mb-2 text-white/90 group-hover:text-white transition-colors text-center">
                   {platform.label}
                 </h3>
                 
-                <p className="text-gray-500 text-xs font-medium mb-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                <p className="text-gray-500 text-xs font-medium mb-6 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 text-center">
                   Optimisé pour la viralité {platform.label}.
                 </p>
                 
-                <div className="mt-auto flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-[#C8FF57] opacity-60 group-hover:opacity-100 transition-all">
+                <div className="mt-auto flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-[#C8FF57] opacity-60 group-hover:opacity-100 transition-all">
                   ACCÉDER <ArrowRight size={12} className="transition-transform group-hover:translate-x-2" />
                 </div>
               </div>
@@ -111,7 +111,8 @@ const HomePage = () => {
           padding: 32px;
           display: flex;
           flex-direction: column;
-          align-items: flex-start;
+          align-items: center;
+          justify-content: center;
           border: 1px solid rgba(255, 255, 255, 0.05);
           border-radius: 32px;
         }
