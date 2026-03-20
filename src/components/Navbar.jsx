@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, Zap, PenTool, MessageSquare, Home, BookOpen, History } from 'lucide-react';
+import { LayoutGrid, Zap, PenTool, Home, BookOpen } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
@@ -11,7 +11,6 @@ const Navbar = () => {
     { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
     { path: '/story', label: 'Histoires', icon: <BookOpen size={20} /> },
     { path: '/copy', label: 'Copy', icon: <PenTool size={20} /> },
-    { path: '/history', label: 'Historique', icon: <History size={20} /> },
   ];
 
   return (
@@ -23,7 +22,7 @@ const Navbar = () => {
           left: 50%;
           transform: translateX(-50%);
           width: calc(100% - 32px);
-          max-width: 680px;
+          max-width: 600px;
           height: 72px;
           background: rgba(18, 18, 24, 0.6);
           backdrop-filter: blur(32px);
