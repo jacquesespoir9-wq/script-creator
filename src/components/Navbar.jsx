@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, Zap, PenTool, MessageSquare } from 'lucide-react';
+import { LayoutGrid, Zap, PenTool, MessageSquare, Home } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
 
   const navLinks = [
-    { path: '/', label: 'Design', icon: <LayoutGrid size={20} /> },
+    { path: '/', label: 'Accueil', icon: <Home size={20} /> },
+    { path: '/design', label: 'Design', icon: <LayoutGrid size={20} /> },
     { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
     { path: '/copy', label: 'Copywriting', icon: <PenTool size={20} /> },
     { path: '/desc', label: 'Description', icon: <MessageSquare size={20} /> },
@@ -47,34 +48,30 @@ const Navbar = () => {
           color: #C8FF57;
         }
         .label-mobile {
-          font-size: 10px;
+          font-size: 9px;
           font-weight: 700;
           text-transform: uppercase;
           letter-spacing: 0.5px;
         }
         @media (min-width: 769px) {
           .bottom-nav-mobile {
-            position: relative;
-            bottom: auto;
-            background: transparent;
-            backdrop-filter: none;
-            border-top: none;
-            box-shadow: none;
-            height: auto;
-            margin-bottom: 40px;
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            min-width: 500px;
+            background: rgba(18, 18, 24, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            height: 64px;
+            padding: 0 12px;
           }
            .nav-item-mobile {
              flex: none;
-             padding: 10px 24px;
-             background: rgba(255,255,255,0.05);
-             border-radius: 50px;
+             padding: 0 16px;
              flex-direction: row;
-             gap: 10px;
-             margin: 0 5px;
-           }
-           .nav-item-mobile.active {
-             background: #C8FF57;
-             color: #0D0D0F;
+             gap: 8px;
            }
         }
       `}</style>
