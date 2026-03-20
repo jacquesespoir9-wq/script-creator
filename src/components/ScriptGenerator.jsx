@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
 import PlatformIcon from './PlatformIcon';
+import { Video, Image as ImageIcon } from 'lucide-react';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const [imageBase64, setImageBase64] = useState(null);
   const [ideaText, setIdeaText] = useState("");
   const [tone, setTone] = useState("educational");
+  const [format, setFormat] = useState("video"); // 'video' or 'image'
   const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(null);
   const [error, setError] = useState(null);
@@ -52,19 +54,24 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     const toneLabel = TONES.find((t) => t.id === tone)?.label;
 
     let specializedPrompt = "";
+    const formatContext = format === 'video' 
+      ? "Le contenu doit être structuré comme un script vidéo dynamique (Accroche, Corps, Conclusion) avec des indications de rythme." 
+      : "Le contenu doit être structuré pour une publication image/carrousel (Légende percutante, texte sur l'image, hashtags).";
+
     if (platform === 'design') {
-      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'idée et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées, et un Appel à l'action.`;
+      specializedPrompt = `Tu es un expert en Design Graphique. ${formatContext} Analyse l'idée et crée un contenu pour reproduire ce design.`;
     } else if (platform === 'motivation') {
-      specializedPrompt = `Tu es un coach en Motivation. Analyse l'idée et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle et termine par un message fort.`;
+      specializedPrompt = `Tu es un coach en Motivation. ${formatContext} Analyse l'idée et crée un contenu inspirant et puissant.`;
     } else if (platform === 'story') {
-      specializedPrompt = `Tu es un écrivain et conteur d'élite. Analyse l'idée et crée une histoire captivante, immersive et bien structurée. Inclus un titre accrocheur, une introduction posant le décor, un développement riche en émotions et un dénouement mémorable.`;
+      specializedPrompt = `Tu es un écrivain et conteur d'élite. ${formatContext} Analyse l'idée et crée une histoire captivante et immersive.`;
     } else if (platform === 'copy') {
-      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'idée et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action).`;
+      specializedPrompt = `Tu es un expert en Copywriting. ${formatContext} Analyse l'idée et crée un texte persuasif utilisant la méthode AIDA.`;
     } else if (platform === 'desc') {
-      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'idée et crée une description optimisée avec une légende captivante, des hashtags stratégiques et un appel à l'action.`;
+      specializedPrompt = `Tu es un Social Media Manager expert. ${formatContext} Analyse l'idée et crée une description optimisée.`;
     }
 
     const fullPrompt = `CATÉGORIE : ${platformInfo.label}
+FORMAT : ${format.toUpperCase()}
 TONALITÉ : ${toneLabel}
 
 ${specializedPrompt}
@@ -194,7 +201,55 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
 
           <div className="glass-panel" style={{ borderRadius: 32, padding: 28 }}>
             <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>2. Options</span>
-            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+              
+              {/* Format Selector */}
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>FORMAT DE PUBLICATION</div>
+                <div style={{ display: "flex", gap: 10, justifyContent: 'center' }}>
+                  <button 
+                    onClick={() => setFormat("video")}
+                    style={{ 
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: "16px", 
+                      borderRadius: 16, 
+                      background: format === "video" ? selectedPlatform.color : "rgba(255,255,255,0.03)", 
+                      color: format === "video" ? "#0D0D0F" : "#666", 
+                      border: format === "video" ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <Video size={20} />
+                    <span style={{ fontSize: 10, fontWeight: 800 }}>VIDÉO</span>
+                  </button>
+                  <button 
+                    onClick={() => setFormat("image")}
+                    style={{ 
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: "16px", 
+                      borderRadius: 16, 
+                      background: format === "image" ? selectedPlatform.color : "rgba(255,255,255,0.03)", 
+                      color: format === "image" ? "#0D0D0F" : "#666", 
+                      border: format === "image" ? 'none' : '1px solid rgba(255,255,255,0.05)',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <ImageIcon size={20} />
+                    <span style={{ fontSize: 10, fontWeight: 800 }}>IMAGE</span>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>TONALITÉ</div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: 'center' }}>
