@@ -9,6 +9,7 @@ export const PLATFORMS = [
 export const SOCIAL_PLATFORMS = [
   { id: "tiktok", label: "TikTok", icon: "📱" },
   { id: "instagram", label: "Instagram", icon: "📸" },
+  { id: "facebook", label: "Facebook", icon: "👥" },
   { id: "youtube", label: "YouTube", icon: "🎥" },
   { id: "linkedin", label: "LinkedIn", icon: "💼" },
   { id: "twitter", label: "Twitter / X", icon: "🐦" },
