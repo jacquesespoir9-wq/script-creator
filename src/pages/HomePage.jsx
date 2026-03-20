@@ -19,15 +19,15 @@ const HomePage = () => {
           <span className="tracking-[0.2em]">L'ÉLITE DE LA CRÉATION IA</span>
         </div>
 
-        {/* Hero Title with Luxury Gradient - Reduced Size */}
+        {/* Hero Title with Luxury Gradient - Improved Version */}
         <div className="text-center mb-12 slide-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="font-outfit text-4xl md:text-7xl font-extrabold leading-[1.1] tracking-tighter mb-6">
-            <span className="text-white">L'ART DU</span> <br />
-            <span className="premium-gradient-text">CONTENU VIRAL</span>
+          <h1 className="font-outfit text-5xl md:text-8xl font-black leading-[0.9] tracking-tighter mb-8">
+            <span className="text-white opacity-90">L'INGÉNIERIE DU</span> <br />
+            <span className="premium-gradient-text drop-shadow-[0_0_40px_rgba(200,255,87,0.2)]">VIRAL ABSOLU</span>
           </h1>
-          <p className="text-gray-500 text-base md:text-lg max-w-2xl mx-auto font-medium leading-relaxed">
-            Propulsez votre créativité dans une nouvelle dimension. <br className="hidden md:block" />
-            Des scripts haute performance, générés par une IA d'exception.
+          <p className="text-gray-500 text-base md:text-xl max-w-2xl mx-auto font-medium leading-relaxed">
+            Dominez les algorithmes avec une précision chirurgicale. <br className="hidden md:block" />
+            L'intelligence artificielle au service de votre influence.
           </p>
         </div>
 
@@ -97,7 +97,6 @@ const HomePage = () => {
           background: linear-gradient(to bottom, #C8FF57 0%, #7B6EF6 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          filter: drop-shadow(0 0 40px rgba(200, 255, 87, 0.2));
         }
 
         .premium-card {
