@@ -94,7 +94,7 @@ const HomePage = () => {
             { icon: <ShieldCheck size={24} />, title: "Standard Premium", desc: "Une qualité de rédaction chirurgicale qui surpasse les standards des meilleures agences de copywriting." }
           ].map((feature, i) => (
             <motion.div key={i} variants={itemVariants} className="feature-card group">
-              <div className="card-glass-inner">
+              <div className="card-glass-inner flex flex-col items-center text-center">
                 <div className="icon-box mb-6 md:mb-10 group-hover:scale-110 group-hover:rotate-3 transition-all duration-700">
                   {feature.icon}
                 </div>
@@ -107,7 +107,7 @@ const HomePage = () => {
         </div>
 
         {/* Final CTA Section */}
-        <motion.div variants={itemVariants} className="final-cta-section">
+        <motion.div variants={itemVariants} className="final-cta-section text-center">
           <div className="relative z-10 max-w-4xl mx-auto">
             <div className="flex justify-center gap-1.5 md:gap-2 mb-8 md:mb-12">
               {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="#C8FF57" className="text-[#C8FF57] md:w-[18px] md:h-[18px]" />)}

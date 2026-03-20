@@ -177,7 +177,7 @@ Génère un script complet, structuré et prêt à l'emploi en français.`;
       <div className="generator-container">
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           <div className="glass-panel" style={{ borderRadius: 32, padding: 28 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16 }}>1. Source de contenu</span>
+            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>1. Source de contenu</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
               {!image ? (
@@ -198,11 +198,11 @@ Génère un script complet, structuré et prêt à l'emploi en français.`;
           </div>
 
           <div className="glass-panel" style={{ borderRadius: 32, padding: 28 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16 }}>2. Options</span>
+            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>2. Options</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12 }}>TONALITÉ</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#888', marginBottom: 12, textAlign: 'center' }}>TONALITÉ</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: 'center' }}>
                   {TONES.map((t) => (
                     <button key={t.id} onClick={() => setTone(t.id)}
                       style={{ padding: "10px 18px", borderRadius: 12, background: tone === t.id ? selectedPlatform.color : "#111115", color: tone === t.id ? "#0D0D0F" : "#666", border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
@@ -239,13 +239,13 @@ Génère un script complet, structuré et prêt à l'emploi en français.`;
 
           {script && (
             <div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
+              <div style={{ display: "flex", flexDirection: 'column', alignItems: "center", gap: 20, marginBottom: 32 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <PlatformIcon id={selectedPlatform?.id} size={32} color={selectedPlatform.color} />
                   <span style={{ fontWeight: 800, fontSize: 18 }}>Script {selectedPlatform?.label}</span>
                 </div>
                 <button onClick={copyScript} style={{ padding: "10px 20px", borderRadius: 12, background: copied ? selectedPlatform.color : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#fff", border: 'none', fontWeight: 700, cursor: 'pointer' }}>
-                  {copied ? "COPIÉ !" : "COPIER"}
+                  {copied ? "COPIÉ !" : "COPIER LE SCRIPT"}
                 </button>
               </div>
               <div style={{ fontSize: 15, color: "#C8C5C0", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
