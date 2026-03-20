@@ -1,6 +1,7 @@
 import React from 'react';
 import Footer from './Footer';
 import Navbar from './Navbar';
+import InstallBanner from './InstallBanner';
 
 const Layout = ({ children }) => {
   return (
@@ -17,6 +18,9 @@ const Layout = ({ children }) => {
       <main className="relative z-10 pt-10 pb-10 flex-grow">
         {children}
       </main>
+      
+      {/* Notification d'installation */}
+      <InstallBanner />
       
       {/* Navigation bar placed above the footer */}
       <Navbar />
