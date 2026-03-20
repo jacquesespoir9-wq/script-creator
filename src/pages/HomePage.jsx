@@ -86,21 +86,6 @@ const HomePage = () => {
           </motion.div>
         </div>
 
-        {/* Stats Engine - Moved Above Features */}
-        <motion.div variants={itemVariants} className="stats-container-compact mb-24 md:mb-40">
-          {[
-            { label: "Scripts Générés", value: "50K+" },
-            { label: "Taux de Rétention", value: "85%" },
-            { label: "Vues Cumulées", value: "100M+" },
-            { label: "Satisfaction", value: "4.9/5" }
-          ].map((stat, i) => (
-            <div key={i} className="stat-item-compact">
-              <div className="stat-value-compact">{stat.value}</div>
-              <div className="stat-label-compact">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
-
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-24 md:mb-48">
           {[
@@ -266,41 +251,6 @@ const HomePage = () => {
           color: #C8FF57;
         }
 
-        .stats-container-compact {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 12px;
-          padding: 24px 0;
-          border-top: 1px solid rgba(255,255,255,0.05);
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-          width: 100%;
-        }
-
-        .stat-item-compact {
-          flex: 1;
-          text-align: center;
-        }
-
-        .stat-value-compact {
-          font-family: 'Outfit', sans-serif;
-          font-size: clamp(1rem, 4vw, 2.2rem);
-          font-weight: 900;
-          color: #C8FF57;
-          line-height: 1;
-          margin-bottom: 4px;
-          text-shadow: 0 0 15px rgba(200, 255, 87, 0.2);
-        }
-
-        .stat-label-compact {
-          font-size: clamp(0.45rem, 1.5vw, 0.65rem);
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          color: #555;
-          white-space: nowrap;
-        }
-
         .final-cta-section {
           position: relative;
           border-radius: 40px;
@@ -344,7 +294,6 @@ const HomePage = () => {
 
         @media (max-width: 640px) {
           .hero-title { font-size: 2.8rem; }
-          .stats-container-compact { gap: 8px; padding: 16px 0; }
         }
       `}</style>
     </div>
