@@ -230,7 +230,7 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
           </div>
 
           <div className="glass-panel" style={{ borderRadius: 32, padding: 28 }}>
-            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>2. Options</span>
+            <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>2. Options de génération</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
               
               {/* Destination Selector */}
@@ -329,11 +329,11 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
           </button>
         </div>
 
-        <div className="glass-panel" style={{ borderRadius: 40, padding: 40, minHeight: 600 }}>
-          {error && <div style={{ background: "rgba(255, 50, 50, 0.1)", color: "#ff6b6b", padding: 20, borderRadius: 16, marginBottom: 24, border: '1px solid rgba(255,50,50,0.2)' }}>⚠️ {error}</div>}
+        <div className="glass-panel" style={{ borderRadius: 40, padding: 40, minHeight: 600, display: 'flex', flexDirection: 'column' }}>
+          <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 32, textAlign: 'center' }}>Résultat de la génération</span>
           
           {!script && !loading && (
-            <div style={{ height: '100%', display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.3 }}>
+            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.3 }}>
               <div style={{ fontSize: 80, marginBottom: 24 }}>{selectedPlatform.icon}</div>
               <h3 style={{ fontSize: 20, fontWeight: 800 }}>Mode {selectedPlatform?.label}</h3>
               <p style={{ fontSize: 14, textAlign: "center" }}>{showImageUpload ? "Chargez une image ou écrivez votre idée pour commencer." : "Décrivez votre idée d'histoire pour commencer."}</p>
@@ -341,14 +341,14 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
           )}
 
           {loading && (
-            <div style={{ height: '100%', display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               <div style={{ width: 64, height: 64, border: `4px solid ${selectedPlatform.color}11`, borderTopColor: selectedPlatform.color, borderRadius: "50%", animation: 'spin 1s linear infinite' }} />
               <div style={{ marginTop: 24, fontWeight: 800, color: selectedPlatform.color }}>ANALYSE EN COURS...</div>
             </div>
           )}
 
           {script && (
-            <div>
+            <div style={{ flexGrow: 1 }}>
               <div style={{ display: "flex", flexDirection: 'column', alignItems: "center", gap: 20, marginBottom: 32 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                   <PlatformIcon id={selectedPlatform?.id} size={32} color={selectedPlatform.color} />
