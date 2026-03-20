@@ -8,8 +8,8 @@ const Navbar = () => {
   const navLinks = [
     { path: '/', label: 'Design', icon: <LayoutGrid size={20} /> },
     { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
-    { path: '/copy', label: 'Copy', icon: <PenTool size={20} /> },
-    { path: '/desc', label: 'Desc', icon: <MessageSquare size={20} /> },
+    { path: '/copy', label: 'Copywriting', icon: <PenTool size={20} /> },
+    { path: '/desc', label: 'Description', icon: <MessageSquare size={20} /> },
   ];
 
   return (
