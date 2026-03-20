@@ -9,6 +9,7 @@ const InstallBanner = () => {
     const handler = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      console.log('Prompt d\'installation prêt');
     };
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
@@ -39,14 +40,18 @@ const InstallBanner = () => {
         setDeferredPrompt(null);
       }
       setIsVisible(false);
+    } else {
+      // Fallback si le prompt n'est pas dispo (ex: iOS ou déjà installé)
+      alert("Pour installer l'application : \n- Sur iOS : Partager > Sur l'écran d'accueil\n- Sur Android/Chrome : Menu > Installer l'application");
+      setIsVisible(false);
     }
   };
 
-  // On ne l'affiche que si l'installation est possible et que le timer est actif
-  if (!isVisible || !deferredPrompt) return null;
+  // On affiche la notification si le timer est actif (isVisible)
+  if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-48px)] max-w-md slide-up">
+    <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] w-[calc(100%-48px)] max-w-md slide-up">
       <div className="glass-panel rounded-3xl p-5 flex items-center gap-4 shadow-2xl border border-white/10">
         <div className="w-12 h-12 rounded-2xl bg-[#C8FF57] flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(200,255,87,0.3)]">
           <Download size={24} color="#0D0D0F" strokeWidth={2.5} />
