@@ -11,28 +11,28 @@ const HomePage = () => {
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#C8FF57]/10 rounded-full blur-[140px] pointer-events-none animate-pulse"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] bg-[#7B6EF6]/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDelay: '3s' }}></div>
       
-      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center min-h-[70vh]">
         {/* Premium Badge */}
-        <div className="premium-badge mb-10 slide-up">
+        <div className="premium-badge mb-12 slide-up">
           <div className="badge-glow"></div>
           <Sparkles size={14} className="text-[#C8FF57]" />
           <span className="tracking-[0.2em]">L'ÉLITE DE LA CRÉATION IA</span>
         </div>
 
-        {/* Hero Title - Sentence Case & Centered */}
-        <div className="text-center mb-12 slide-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="font-outfit text-5xl md:text-8xl font-black leading-[1.1] tracking-tighter mb-8 text-center">
-            <span className="text-white opacity-90">L'ingénierie du</span> <br />
-            <span className="premium-gradient-text drop-shadow-[0_0_40px_rgba(200,255,87,0.2)]">viral absolu</span>
+        {/* Hero Title - Massive, Centered & New Colors */}
+        <div className="text-center mb-16 slide-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="font-outfit text-6xl md:text-[120px] font-black leading-[0.85] tracking-tighter mb-10 text-center">
+            <span className="text-white block mb-2">L'ingénierie du</span>
+            <span className="text-[#C8FF57] drop-shadow-[0_0_50px_rgba(200,255,87,0.4)]">viral absolu</span>
           </h1>
-          <p className="text-gray-500 text-base md:text-xl max-w-2xl mx-auto font-medium leading-relaxed text-center">
+          <p className="text-gray-400 text-lg md:text-2xl max-w-3xl mx-auto font-medium leading-relaxed text-center opacity-80">
             Dominez les algorithmes avec une précision chirurgicale. <br className="hidden md:block" />
             L'intelligence artificielle au service de votre influence.
           </p>
         </div>
 
         {/* Main Action Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-8 slide-up" style={{ animationDelay: '0.3s' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-12 slide-up" style={{ animationDelay: '0.3s' }}>
           {PLATFORMS.map((platform) => (
             <Link 
               key={platform.id} 
@@ -72,12 +72,12 @@ const HomePage = () => {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 8px 20px;
+          padding: 10px 24px;
           background: rgba(255, 255, 255, 0.03);
           backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 100px;
-          font-size: 9px;
+          font-size: 10px;
           font-weight: 900;
           color: #C8FF57;
           overflow: hidden;
@@ -91,12 +91,6 @@ const HomePage = () => {
           height: 100%;
           background: linear-gradient(90deg, transparent, rgba(200, 255, 87, 0.2), transparent);
           animation: shimmer 3s infinite;
-        }
-
-        .premium-gradient-text {
-          background: linear-gradient(to bottom, #C8FF57 0%, #7B6EF6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
         }
 
         .premium-card {
