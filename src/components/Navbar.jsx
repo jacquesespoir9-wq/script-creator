@@ -1,81 +1,51 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, Zap, PenTool, MessageSquare, Menu, X } from 'lucide-react';
+import { LayoutGrid, Zap, PenTool, MessageSquare } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navLinks = [
-    { path: '/', label: 'Design', icon: <LayoutGrid size={18} /> },
-    { path: '/motivation', label: 'Motivation', icon: <Zap size={18} /> },
-    { path: '/copywriter', label: 'Copywriter', icon: <PenTool size={18} /> },
-    { path: '/description', label: 'Description', icon: <MessageSquare size={18} /> },
+    { path: '/', label: 'Design', icon: <LayoutGrid size={20} /> },
+    { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
+    { path: '/copywriter', label: 'Copywriter', icon: <PenTool size={20} /> },
+    { path: '/description', label: 'Description', icon: <MessageSquare size={20} /> },
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 px-6 py-4 ${isScrolled ? 'pt-4' : 'pt-6'}`}>
-      <div className={`max-w-6xl mx-auto glass-panel rounded-2xl px-6 py-3 flex items-center justify-between transition-all ${isScrolled ? 'bg-black/60 border-white/10 shadow-2xl' : 'bg-transparent border-transparent'}`}>
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-[#C8FF57] rounded-lg flex items-center justify-center group-hover:rotate-12 transition-transform">
-            <Zap size={18} color="#0D0D0F" fill="#0D0D0F" />
-          </div>
-          <span className="font-outfit font-extrabold text-xl tracking-tight">
-            Script<span className="text-[#C8FF57]">Gen</span>
-          </span>
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-48px)] max-w-lg">
+      <div className="glass-panel rounded-3xl px-4 py-3 flex items-center justify-around shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-white/10">
+        {navLinks.map((link) => {
+          const isActive = location.pathname === link.path;
+          return (
             <Link
               key={link.path}
               to={link.path}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                location.pathname === link.path 
-                ? 'bg-[#C8FF57] text-[#0D0D0F]' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+              className={`relative flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300 ${
+                isActive ? 'text-[#C8FF57]' : 'text-gray-500 hover:text-white'
               }`}
             >
-              {link.icon}
-              {link.label}
-            </Link>
-          ))}
-        </div>
+              {/* Active Indicator Glow */}
+              {isActive && (
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-8 h-8 bg-[#C8FF57]/20 blur-xl rounded-full" />
+              )}
+              
+              <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
+                {link.icon}
+              </div>
+              
+              <span className={`text-[10px] font-bold uppercase tracking-wider transition-all ${isActive ? 'opacity-100' : 'opacity-60'}`}>
+                {link.label}
+              </span>
 
-        {/* Mobile Toggle */}
-        <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X /> : <Menu />}
-        </button>
+              {/* Active Dot */}
+              {isActive && (
+                <div className="absolute -bottom-1 w-1 h-1 bg-[#C8FF57] rounded-full shadow-[0_0_10px_#C8FF57]" />
+              )}
+            </Link>
+          );
+        })}
       </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden absolute top-24 left-6 right-6 glass-panel rounded-3xl p-4 flex flex-col gap-2 slide-up">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setIsMenuOpen(false)}
-              className={`flex items-center gap-3 px-5 py-4 rounded-2xl text-base font-bold transition-all ${
-                location.pathname === link.path 
-                ? 'bg-[#C8FF57] text-[#0D0D0F]' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {link.icon}
-              {link.label}
-            </Link>
-          ))}
-        </div>
-      )}
     </nav>
   );
 };

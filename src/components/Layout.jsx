@@ -12,7 +12,8 @@ const Layout = ({ children }) => {
       <div className="blob bottom-[-20%] right-[-10%] w-[600px] h-[600px] bg-[rgba(123,110,246,0.1)] [animation-delay:-5s]"></div>
       <div className="blob top-[40%] left-[40%] w-[450px] h-[450px] bg-[rgba(255,255,255,0.03)] [animation-delay:-10s]"></div>
 
-      <main className="relative z-10 pt-20 flex-grow">
+      {/* Main Content with bottom padding for the floating nav */}
+      <main className="relative z-10 pt-10 pb-32 flex-grow">
         {children}
       </main>
       
