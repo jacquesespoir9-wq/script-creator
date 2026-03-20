@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutGrid, Zap, PenTool, MessageSquare, Home } from 'lucide-react';
+import { LayoutGrid, Zap, PenTool, MessageSquare, Home, BookOpen } from 'lucide-react';
 
 const Navbar = () => {
   const location = useLocation();
@@ -9,6 +9,7 @@ const Navbar = () => {
     { path: '/', label: 'Accueil', icon: <Home size={20} /> },
     { path: '/design', label: 'Design', icon: <LayoutGrid size={20} /> },
     { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
+    { path: '/story', label: 'Histoires', icon: <BookOpen size={20} /> },
     { path: '/copy', label: 'Copywriting', icon: <PenTool size={20} /> },
     { path: '/desc', label: 'Description', icon: <MessageSquare size={20} /> },
   ];
@@ -60,7 +61,7 @@ const Navbar = () => {
             left: 50%;
             transform: translateX(-50%);
             width: auto;
-            min-width: 500px;
+            min-width: 600px;
             background: rgba(18, 18, 24, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;

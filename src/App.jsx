@@ -7,6 +7,7 @@ import HistoryPage from './pages/HistoryPage';
 import MotivationPage from './pages/MotivationPage';
 import CopywriterPage from './pages/CopywriterPage';
 import DescriptionPage from './pages/DescriptionPage';
+import StoryPage from './pages/StoryPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/motivation" element={<MotivationPage />} />
           <Route path="/copy" element={<CopywriterPage />} />
           <Route path="/desc" element={<DescriptionPage />} />
+          <Route path="/story" element={<StoryPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Layout>

@@ -1,6 +1,7 @@
 export const PLATFORMS = [
   { id: "design", label: "Design Graphique", icon: "🎨", color: "#C8FF57" },
   { id: "motivation", label: "Motivation", icon: "⚡", color: "#FFD700" },
+  { id: "story", label: "Histoires", icon: "📖", color: "#FF9F43" },
   { id: "copy", label: "Copywriting", icon: "✍️", color: "#7B6EF6" },
   { id: "desc", label: "Description", icon: "📝", color: "#FF6B6B" },
 ];
@@ -17,4 +18,5 @@ export const TONES = [
   { id: "casual", label: "Décontracté" },
   { id: "energetic", label: "Énergique" },
   { id: "educational", label: "Pédagogique" },
+  { id: "dramatic", label: "Dramatique" },
 ];
