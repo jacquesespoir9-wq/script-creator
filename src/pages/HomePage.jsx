@@ -60,6 +60,13 @@ const HomePage = () => {
       >
         {/* Hero Section */}
         <div className="flex flex-col items-center text-center mb-16 md:mb-24">
+          <motion.div variants={itemVariants} className="mb-8 md:mb-12">
+            <div className="liquid-badge">
+              <Crown size={12} className="text-[#C8FF57] md:w-3.5 md:h-3.5" />
+              <span className="text-[8px] md:text-[10px] font-black tracking-[0.3em] md:tracking-[0.4em] uppercase text-white/60">Jacques Design Studio</span>
+            </div>
+          </motion.div>
+
           <motion.h1 variants={itemVariants} className="hero-title mb-8 md:mb-14">
             L'INGÉNIERIE DU <br />
             <span className="liquid-gradient-text">VIRAL ABSOLU</span>
