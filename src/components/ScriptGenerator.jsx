@@ -3,7 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, SOCIAL_PLATFORMS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
 import PlatformIcon from './PlatformIcon';
-import { Video, Image as ImageIcon } from 'lucide-react';
+import { 
+  Video, 
+  Image as ImageIcon, 
+  Instagram, 
+  Facebook, 
+  Youtube, 
+  Linkedin, 
+  Twitter, 
+  Music2 
+} from 'lucide-react';
 
 const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
   const navigate = useNavigate();
@@ -19,6 +28,18 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
   const [copied, setCopied] = useState(false);
 
   const platform = initialPlatformId;
+
+  const getSocialIcon = (id, size = 16) => {
+    switch (id) {
+      case 'tiktok': return <Music2 size={size} />;
+      case 'instagram': return <Instagram size={size} />;
+      case 'facebook': return <Facebook size={size} />;
+      case 'youtube': return <Youtube size={size} />;
+      case 'linkedin': return <Linkedin size={size} />;
+      case 'twitter': return <Twitter size={size} />;
+      default: return null;
+    }
+  };
 
   const handleFile = useCallback((file) => {
     if (!file || !file.type.startsWith("image/")) return;
@@ -229,9 +250,9 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: 6
+                        gap: 8
                       }}>
-                      <span>{s.icon}</span>
+                      {getSocialIcon(s.id)}
                       {s.label}
                     </button>
                   ))}
