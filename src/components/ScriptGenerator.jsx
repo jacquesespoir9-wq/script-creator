@@ -78,33 +78,45 @@ const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
 
     let specializedPrompt = "";
     const formatContext = format === 'video' 
-      ? `Le contenu doit être structuré comme un script vidéo dynamique optimisé pour ${socialInfo.label} (Accroche, Corps, Conclusion) avec des indications de rythme.` 
-      : `Le contenu doit être structuré pour une publication image/carrousel sur ${socialInfo.label} (Légende percutante, texte sur l'image, hashtags).`;
+      ? `Structure le contenu comme un script vidéo dynamique (Accroche virale, Corps détaillé, Conclusion avec Call-to-Action) avec des indications de mise en scène.` 
+      : `Structure le contenu pour une publication statique ou carrousel (Texte sur les visuels, Légende captivante, Hashtags stratégiques).`;
 
+    // --- EXPERTISE LOGIC ---
     if (platform === 'design') {
-      specializedPrompt = `Tu es un expert en Design Graphique. ${formatContext} Analyse l'idée et crée un contenu pour reproduire ce design.`;
+      specializedPrompt = `Tu es un Directeur Artistique et expert en tutoriels de design graphique. Ton but est de décomposer visuellement une création. 
+      Analyse l'image ou l'idée pour expliquer les calques, les masques, la colorimétrie, et la typographie. 
+      Donne des conseils techniques précis (outils Photoshop/Illustrator/Figma) et rend le processus simple mais professionnel. ${formatContext}`;
     } else if (platform === 'motivation') {
-      specializedPrompt = `Tu es un coach en Motivation. ${formatContext} Analyse l'idée et crée un contenu inspirant et puissant.`;
+      specializedPrompt = `Tu es un conférencier de renommée mondiale et expert en psychologie de la performance. 
+      Ton but est de créer un impact émotionnel immédiat. Utilise des métaphores puissantes, un rythme saccadé pour la tension, et des montées en puissance oratoires. 
+      Le script doit transformer l'état d'esprit de l'auditeur. ${formatContext}`;
     } else if (platform === 'story') {
-      specializedPrompt = `Tu es un écrivain et conteur d'élite. ${formatContext} Analyse l'idée et crée une histoire captivante et immersive.`;
+      specializedPrompt = `Tu es un scénariste d'élite spécialisé dans le storytelling immersif. 
+      Construis un récit avec un arc narratif complet : une situation initiale intrigante, un élément perturbateur, des péripéties riches en détails sensoriels, et un dénouement mémorable. 
+      Mise sur l'empathie et le suspense. ${formatContext}`;
     } else if (platform === 'copy') {
-      specializedPrompt = `Tu es un expert en Copywriting. ${formatContext} Analyse l'idée et crée un texte persuasif utilisant la méthode AIDA.`;
+      specializedPrompt = `Tu es un expert en Copywriting et marketing direct. 
+      Utilise des frameworks psychologiques comme AIDA (Attention, Intérêt, Désir, Action) ou PAS (Problème, Agitation, Solution). 
+      Rédige des accroches magnétiques, élimine les objections et crée une urgence irrésistible pour la conversion. ${formatContext}`;
     } else if (platform === 'desc') {
-      specializedPrompt = `Tu es un Social Media Manager expert. ${formatContext} Analyse l'idée et crée une description optimisée.`;
+      specializedPrompt = `Tu es un Social Media Manager expert en algorithmes et SEO. 
+      Rédige des légendes optimisées pour maximiser l'engagement (likes, partages, commentaires). 
+      Inclus des hashtags de niche et de masse, des emojis pertinents et une structure aérée qui facilite la lecture sur mobile. ${formatContext}`;
     }
 
-    const fullPrompt = `CATÉGORIE : ${platformInfo.label}
-DESTINATION : ${socialInfo.label}
-FORMAT : ${format.toUpperCase()}
+    const fullPrompt = `DOMAINE D'EXPERTISE : ${platformInfo.label}
+PLATEFORME CIBLE : ${socialInfo.label}
+FORMAT REQUIS : ${format.toUpperCase()}
 TONALITÉ : ${toneLabel}
 
+INSTRUCTIONS D'EXPERT :
 ${specializedPrompt}
 
-CONTEXTE UTILISATEUR : ${ideaText}
+CONTEXTE FOURNI PAR L'UTILISATEUR :
+${ideaText}
 
-IMPORTANT : Développe un contenu très détaillé, riche et complet d'environ 500 à 600 mots. Ne sois pas concis, approfondis chaque section, ajoute des détails, des nuances et des explications pour atteindre cette longueur.
-
-Génère un contenu complet, structuré et prêt à l'emploi en français.`;
+EXIGENCE DE QUALITÉ :
+Génère un contenu extrêmement détaillé et approfondi (environ 500 à 700 mots). Ne sois pas superficiel. Développe chaque point, ajoute des nuances, des conseils d'expert et assure-toi que le contenu est prêt à être publié en français.`;
 
     try {
       const messages = [
