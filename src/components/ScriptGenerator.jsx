@@ -78,6 +78,8 @@ ${specializedPrompt}
 
 CONTEXTE UTILISATEUR : ${ideaText}
 
+IMPORTANT : Développe un contenu très détaillé, riche et complet d'environ 500 à 600 mots. Ne sois pas concis, approfondis chaque section, ajoute des détails, des nuances et des explications pour atteindre cette longueur.
+
 Génère un contenu complet, structuré et prêt à l'emploi en français.`;
 
     try {
