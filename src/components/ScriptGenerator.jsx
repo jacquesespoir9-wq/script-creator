@@ -10,7 +10,6 @@ const ScriptGenerator = ({ initialPlatformId }) => {
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
   const [ideaText, setIdeaText] = useState("");
-  const [duration, setDuration] = useState("60");
   const [tone, setTone] = useState("educational");
   const [loading, setLoading] = useState(false);
   const [script, setScript] = useState(null);
@@ -50,30 +49,28 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     setError(null);
     setScript(null);
 
-    const platformInfo = PLATFORMS.find((p) => p.id === platform);
+    const platformInfo = PLATFORMS.find((p) => p.id === platform) || PLATFORMS[0];
     const toneLabel = TONES.find((t) => t.id === tone)?.label;
 
-    // Custom instructions based on the mode
     let specializedPrompt = "";
     if (platform === 'design') {
-      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'image et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec Accroche, Matériel requis, Étapes détaillées, et Résultat final.`;
+      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'image et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées (calques, effets, outils), et un Appel à l'action.`;
     } else if (platform === 'motivation') {
-      specializedPrompt = `Tu es un coach en Motivation. Analyse l'image et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle et termine par un message fort pour booster l'audience.`;
+      specializedPrompt = `Tu es un coach en Motivation. Analyse l'image et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle, des silences marqués et termine par un message fort pour transformer la vie de l'audience.`;
     } else if (platform === 'copy') {
-      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'image et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action). Optimize le texte pour captiver et convertir.`;
+      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'image et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action). Optimise le texte pour captiver immédiatement et convertir le lecteur en client.`;
     } else if (platform === 'desc') {
-      specializedPrompt = `Tu es un Social Media Manager. Analyse l'image et crée une description optimisée SEO pour les réseaux sociaux. Inclus des hashtags pertinents, une légende captivante et un appel à l'action clair.`;
+      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'image et crée une description optimisée pour Instagram/TikTok/YouTube. Inclus une légende captivante, des hashtags stratégiques et un appel à l'action clair pour maximiser l'engagement.`;
     }
 
-    const fullPrompt = `Mode : ${platformInfo.label}
-Tonalité : ${toneLabel}
-Durée cible : ${duration} secondes
+    const fullPrompt = `CATÉGORIE : ${platformInfo.label}
+TONALITÉ : ${toneLabel}
 
 ${specializedPrompt}
 
-Voici le contexte supplémentaire fourni par l'utilisateur : ${ideaText}
+CONTEXTE UTILISATEUR : ${ideaText}
 
-Génère un script complet, structuré et prêt à l'emploi.`;
+Génère un script complet, structuré et prêt à l'emploi en français.`;
 
     try {
       const genAI = new GoogleGenerativeAI(API_KEY);
@@ -97,11 +94,9 @@ Génère un script complet, structuré et prêt à l'emploi.`;
       
       setScript(text);
 
-      // Save to Supabase
       supabase.from('scripts').insert([{
         content: text,
         platform: platformInfo.label,
-        duration: duration,
         tone: tone,
         image_provided: !!imageBase64
       }]).then(({ error: sbError }) => { if (sbError) console.error("Database Error:", sbError); });
@@ -121,7 +116,7 @@ Génère un script complet, structuré et prêt à l'emploi.`;
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
+  const selectedPlatform = PLATFORMS.find((p) => p.id === platform) || PLATFORMS[0];
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px 80px" }}>
@@ -143,15 +138,16 @@ Génère un script complet, structuré et prêt à l'emploi.`;
           width: 100%;
           padding: 20px;
           border-radius: 20px;
-          background: #C8FF57;
+          background: ${selectedPlatform.color};
           color: #0D0D0F;
           font-weight: 900;
           font-size: 15px;
           cursor: pointer;
           border: none;
-          transition: transform 0.2s;
+          transition: all 0.2s;
+          box-shadow: 0 10px 20px ${selectedPlatform.color}22;
         }
-        .generate-btn:hover:not(:disabled) { transform: translateY(-4px); }
+        .generate-btn:hover:not(:disabled) { transform: translateY(-4px); filter: brightness(1.1); }
         .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         @media (max-width: 1000px) { .generator-container { grid-template-columns: 1fr; } }
       `}</style>
@@ -187,7 +183,7 @@ Génère un script complet, structuré et prêt à l'emploi.`;
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {TONES.map((t) => (
                     <button key={t.id} onClick={() => setTone(t.id)}
-                      style={{ padding: "10px 18px", borderRadius: 12, background: tone === t.id ? "#C8FF57" : "#111115", color: tone === t.id ? "#0D0D0F" : "#666", border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
+                      style={{ padding: "10px 18px", borderRadius: 12, background: tone === t.id ? selectedPlatform.color : "#111115", color: tone === t.id ? "#0D0D0F" : "#666", border: 'none', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
                       {t.label}
                     </button>
                   ))}
@@ -206,7 +202,7 @@ Génère un script complet, structuré et prêt à l'emploi.`;
           
           {!script && !loading && (
             <div style={{ height: '100%', display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.3 }}>
-              <div style={{ fontSize: 80, marginBottom: 24 }}>✨</div>
+              <div style={{ fontSize: 80, marginBottom: 24 }}>{selectedPlatform.icon}</div>
               <h3 style={{ fontSize: 20, fontWeight: 800 }}>Mode {selectedPlatform?.label}</h3>
               <p style={{ fontSize: 14, textAlign: "center" }}>Chargez une image ou écrivez votre idée pour commencer.</p>
             </div>
@@ -214,8 +210,8 @@ Génère un script complet, structuré et prêt à l'emploi.`;
 
           {loading && (
             <div style={{ height: '100%', display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 64, height: 64, border: "4px solid rgba(200,255,87,0.1)", borderTopColor: "#C8FF57", borderRadius: "50%", animation: 'spin 1s linear infinite' }} />
-              <div style={{ marginTop: 24, fontWeight: 800, color: '#C8FF57' }}>ANALYSE EN COURS...</div>
+              <div style={{ width: 64, height: 64, border: `4px solid ${selectedPlatform.color}11`, borderTopColor: selectedPlatform.color, borderRadius: "50%", animation: 'spin 1s linear infinite' }} />
+              <div style={{ marginTop: 24, fontWeight: 800, color: selectedPlatform.color }}>ANALYSE EN COURS...</div>
             </div>
           )}
 
@@ -223,10 +219,10 @@ Génère un script complet, structuré et prêt à l'emploi.`;
             <div>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 32 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <PlatformIcon id={selectedPlatform?.id} size={32} color="#C8FF57" />
+                  <PlatformIcon id={selectedPlatform?.id} size={32} color={selectedPlatform.color} />
                   <span style={{ fontWeight: 800, fontSize: 18 }}>Script {selectedPlatform?.label}</span>
                 </div>
-                <button onClick={copyScript} style={{ padding: "10px 20px", borderRadius: 12, background: copied ? "#C8FF57" : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#fff", border: 'none', fontWeight: 700, cursor: 'pointer' }}>
+                <button onClick={copyScript} style={{ padding: "10px 20px", borderRadius: 12, background: copied ? selectedPlatform.color : "rgba(255,255,255,0.05)", color: copied ? "#0D0D0F" : "#fff", border: 'none', fontWeight: 700, cursor: 'pointer' }}>
                   {copied ? "COPIÉ !" : "COPIER"}
                 </button>
               </div>

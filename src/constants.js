@@ -1,8 +1,8 @@
 export const PLATFORMS = [
-  { id: "instagram", label: "Instagram Reels", icon: "📸", color: "#E1306C" },
-  { id: "tiktok", label: "TikTok", icon: "🎵", color: "#69C9D0" },
-  { id: "youtube", label: "YouTube Shorts", icon: "▶️", color: "#FF0000" },
-  { id: "facebook", label: "Facebook Reels", icon: "👥", color: "#1877F2" },
+  { id: "design", label: "Design Graphique", icon: "🎨", color: "#C8FF57" },
+  { id: "motivation", label: "Motivation", icon: "⚡", color: "#FFD700" },
+  { id: "copy", label: "Copywriting", icon: "✍️", color: "#7B6EF6" },
+  { id: "desc", label: "Description", icon: "📝", color: "#FF6B6B" },
 ];
 
 export const DURATIONS = [
@@ -17,9 +17,4 @@ export const TONES = [
   { id: "casual", label: "Décontracté" },
   { id: "energetic", label: "Énergique" },
   { id: "educational", label: "Pédagogique" },
-];
-
-export const FORMATS = [
-  { id: "video", label: "Vidéo", icon: "🎥" },
-  { id: "image", label: "Image / Carrousel", icon: "🖼️" },
 ];
