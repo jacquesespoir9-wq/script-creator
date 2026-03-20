@@ -1,5 +1,5 @@
 import React from 'react';
-import StoryGenerator from '../components/StoryGenerator';
+import ScriptGenerator from '../components/ScriptGenerator';
 
 const StoryPage = () => {
   return (
@@ -12,7 +12,7 @@ const StoryPage = () => {
           Transformez vos idées les plus folles en récits captivants grâce à la puissance de l'IA.
         </p>
       </div>
-      <StoryGenerator />
+      <ScriptGenerator initialPlatformId="story" />
     </div>
   );
 };

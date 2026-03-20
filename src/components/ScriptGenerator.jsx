@@ -40,7 +40,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
     
     const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     if (!API_KEY) {
-      setError("ERREUR : Clé API OpenRouter non configurée dans les variables d'environnement.");
+      setError("ERREUR : Clé API OpenRouter non configurée.");
       return;
     }
 
@@ -53,13 +53,15 @@ const ScriptGenerator = ({ initialPlatformId }) => {
 
     let specializedPrompt = "";
     if (platform === 'design') {
-      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'idée et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées (calques, effets, outils), et un Appel à l'action.`;
+      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'idée et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées, et un Appel à l'action.`;
     } else if (platform === 'motivation') {
-      specializedPrompt = `Tu es un coach en Motivation. Analyse l'idée et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle, des silences marqués et termine par un message fort pour transformer la vie de l'audience.`;
+      specializedPrompt = `Tu es un coach en Motivation. Analyse l'idée et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle et termine par un message fort.`;
+    } else if (platform === 'story') {
+      specializedPrompt = `Tu es un écrivain et conteur d'élite. Analyse l'idée et crée une histoire captivante, immersive et bien structurée. Inclus un titre accrocheur, une introduction posant le décor, un développement riche en émotions et un dénouement mémorable.`;
     } else if (platform === 'copy') {
-      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'idée et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action). Optimise le texte pour captiver immédiatement et convertir le lecteur en client.`;
+      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'idée et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action).`;
     } else if (platform === 'desc') {
-      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'idée et crée une description optimisée pour Instagram/TikTok/YouTube. Inclus une légende captivante, des hashtags stratégiques et un appel à l'action clair pour maximiser l'engagement.`;
+      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'idée et crée une description optimisée avec une légende captivante, des hashtags stratégiques et un appel à l'action.`;
     }
 
     const fullPrompt = `CATÉGORIE : ${platformInfo.label}
@@ -69,7 +71,7 @@ ${specializedPrompt}
 
 CONTEXTE UTILISATEUR : ${ideaText}
 
-Génère un script complet, structuré et prêt à l'emploi en français.`;
+Génère un contenu complet, structuré et prêt à l'emploi en français.`;
 
     try {
       const messages = [
@@ -105,15 +107,9 @@ Génère un script complet, structuré et prêt à l'emploi en français.`;
       });
 
       const data = await response.json();
-      
-      if (data.error) {
-        throw new Error(data.error.message || "Erreur API OpenRouter");
-      }
+      if (data.error) throw new Error(data.error.message || "Erreur API");
 
       const text = data.choices[0].message.content;
-      
-      if (!text) throw new Error("Réponse vide de l'IA.");
-      
       setScript(text);
 
       supabase.from('scripts').insert([{
@@ -124,7 +120,6 @@ Génère un script complet, structuré et prêt à l'emploi en français.`;
       }]).then(({ error: sbError }) => { if (sbError) console.error("Database Error:", sbError); });
 
     } catch (err) {
-      console.error(err);
       setError(err.message);
     } finally {
       setLoading(false);
