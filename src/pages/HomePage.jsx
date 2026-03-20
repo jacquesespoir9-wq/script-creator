@@ -20,8 +20,8 @@ const HomePage = () => {
         </div>
 
         {/* Hero Title - Refined Size & Centered */}
-        <div className="text-center mb-12 slide-up" style={{ animationDelay: '0.1s' }}>
-          <h1 className="font-outfit text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter mb-8 text-center">
+        <div className="text-center mb-12 slide-up w-full flex flex-col items-center" style={{ animationDelay: '0.1s' }}>
+          <h1 className="font-outfit text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter mb-8 text-center w-full">
             <span className="text-white block mb-2">L'ingénierie du</span>
             <span className="text-[#C8FF57] drop-shadow-[0_0_30px_rgba(200,255,87,0.3)]">viral absolu</span>
           </h1>
