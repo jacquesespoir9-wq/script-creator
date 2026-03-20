@@ -11,21 +11,21 @@ const HomePage = () => {
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#C8FF57]/10 rounded-full blur-[140px] pointer-events-none animate-pulse"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[700px] h-[700px] bg-[#7B6EF6]/10 rounded-full blur-[160px] pointer-events-none animate-pulse" style={{ animationDelay: '3s' }}></div>
       
-      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center">
         {/* Premium Badge */}
-        <div className="premium-badge mb-10 slide-up">
+        <div className="premium-badge mb-10 slide-up flex items-center justify-center">
           <div className="badge-glow"></div>
-          <Sparkles size={14} className="text-[#C8FF57]" />
+          <Sparkles size={14} className="text-[#C8FF57] mr-2" />
           <span className="tracking-[0.2em]">L'ÉLITE DE LA CRÉATION IA</span>
         </div>
 
-        {/* Hero Title - Refined Size & Centered */}
-        <div className="text-center mb-12 slide-up w-full flex flex-col items-center" style={{ animationDelay: '0.1s' }}>
-          <h1 className="font-outfit text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter mb-8 text-center w-full">
-            <span className="text-white block mb-2">L'ingénierie du</span>
+        {/* Hero Title - Forced Centering */}
+        <div className="w-full flex flex-col items-center justify-center text-center mb-12 slide-up" style={{ animationDelay: '0.1s' }}>
+          <h1 className="font-outfit text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter mb-8 text-center w-full flex flex-col items-center">
+            <span className="text-white block">L'ingénierie du</span>
             <span className="text-[#C8FF57] drop-shadow-[0_0_30px_rgba(200,255,87,0.3)]">viral absolu</span>
           </h1>
-          <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto font-medium leading-relaxed text-center opacity-80">
+          <p className="text-gray-400 text-base md:text-xl max-w-2xl font-medium leading-relaxed text-center opacity-80">
             Dominez les algorithmes avec une précision chirurgicale. <br className="hidden md:block" />
             L'intelligence artificielle au service de votre influence.
           </p>
