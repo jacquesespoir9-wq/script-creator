@@ -16,7 +16,7 @@ const MotivationPage = () => {
           Générez des discours inspirants et percutants pour booster votre audience.
         </p>
       </div>
-      <ScriptGenerator initialPlatformId="instagram" category="motivation" />
+      <ScriptGenerator initialPlatformId="motivation" />
     </div>
   );
 };

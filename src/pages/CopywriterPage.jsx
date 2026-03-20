@@ -16,7 +16,7 @@ const CopywriterPage = () => {
           Créez des textes de vente qui convertissent et captivent l'attention.
         </p>
       </div>
-      <ScriptGenerator initialPlatformId="instagram" category="copywriting" />
+      <ScriptGenerator initialPlatformId="copy" />
     </div>
   );
 };

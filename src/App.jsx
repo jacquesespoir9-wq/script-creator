@@ -16,8 +16,8 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/motivation" element={<MotivationPage />} />
-          <Route path="/copywriter" element={<CopywriterPage />} />
-          <Route path="/description" element={<DescriptionPage />} />
+          <Route path="/copy" element={<CopywriterPage />} />
+          <Route path="/desc" element={<DescriptionPage />} />
           <Route path="/:platformId" element={<PlatformPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>

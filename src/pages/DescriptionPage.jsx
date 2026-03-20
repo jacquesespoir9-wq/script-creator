@@ -16,7 +16,7 @@ const DescriptionPage = () => {
           Optimisez vos publications avec des descriptions engageantes et des hashtags pertinents.
         </p>
       </div>
-      <ScriptGenerator initialPlatformId="instagram" category="description" />
+      <ScriptGenerator initialPlatformId="desc" />
     </div>
   );
 };
