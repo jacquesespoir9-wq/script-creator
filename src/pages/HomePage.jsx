@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { Sparkles, Zap, Target, Cpu, Crown, ArrowRight, ShieldCheck, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -59,7 +59,7 @@ const HomePage = () => {
         className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-32 pb-32 md:pb-48"
       >
         {/* Hero Section */}
-        <div className="flex flex-col items-center text-center mb-24 md:mb-48">
+        <div className="flex flex-col items-center text-center mb-24 md:mb-40">
           <motion.div variants={itemVariants} className="mb-8 md:mb-12">
             <div className="liquid-badge">
               <Crown size={12} className="text-[#C8FF57] md:w-3.5 md:h-3.5" />
@@ -86,6 +86,21 @@ const HomePage = () => {
           </motion.div>
         </div>
 
+        {/* Stats Engine - Compact & Single Line */}
+        <motion.div variants={itemVariants} className="stats-container-compact mb-24 md:mb-40">
+          {[
+            { label: "Scripts Générés", value: "50K+" },
+            { label: "Taux de Rétention", value: "85%" },
+            { label: "Vues Cumulées", value: "100M+" },
+            { label: "Satisfaction", value: "4.9/5" }
+          ].map((stat, i) => (
+            <div key={i} className="stat-item-compact">
+              <div className="stat-value-compact">{stat.value}</div>
+              <div className="stat-label-compact">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 mb-24 md:mb-48">
           {[
@@ -105,21 +120,6 @@ const HomePage = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* Stats Engine */}
-        <motion.div variants={itemVariants} className="stats-container mb-24 md:mb-48">
-          {[
-            { label: "Scripts Générés", value: "50K+" },
-            { label: "Taux de Rétention", value: "85%" },
-            { label: "Vues Cumulées", value: "100M+" },
-            { label: "Satisfaction", value: "4.9/5" }
-          ].map((stat, i) => (
-            <div key={i} className="stat-item text-center">
-              <div className="stat-value">{stat.value}</div>
-              <div className="stat-label">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
 
         {/* Final CTA Section */}
         <motion.div variants={itemVariants} className="final-cta-section">
@@ -266,39 +266,39 @@ const HomePage = () => {
           color: #C8FF57;
         }
 
-        .stats-container {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          md:flex;
-          md:flex-wrap;
-          md:justify-content: space-around;
-          gap: 32px;
-          md:gap: 40px;
-          padding: 40px 0;
-          md:padding: 60px 0;
+        .stats-container-compact {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          padding: 24px 0;
           border-top: 1px solid rgba(255,255,255,0.05);
           border-bottom: 1px solid rgba(255,255,255,0.05);
+          width: 100%;
         }
 
-        .stat-value {
+        .stat-item-compact {
+          flex: 1;
+          text-align: center;
+        }
+
+        .stat-value-compact {
           font-family: 'Outfit', sans-serif;
-          font-size: 2.5rem;
-          md:font-size: 4rem;
+          font-size: clamp(1rem, 4vw, 2.2rem);
           font-weight: 900;
           color: #C8FF57;
           line-height: 1;
-          margin-bottom: 8px;
-          text-shadow: 0 0 20px rgba(200, 255, 87, 0.2);
+          margin-bottom: 4px;
+          text-shadow: 0 0 15px rgba(200, 255, 87, 0.2);
         }
 
-        .stat-label {
-          font-size: 0.6rem;
-          md:font-size: 0.7rem;
+        .stat-label-compact {
+          font-size: clamp(0.45rem, 1.5vw, 0.65rem);
           font-weight: 800;
           text-transform: uppercase;
-          letter-spacing: 0.2em;
-          md:letter-spacing: 0.3em;
+          letter-spacing: 0.1em;
           color: #555;
+          white-space: nowrap;
         }
 
         .final-cta-section {
@@ -344,7 +344,7 @@ const HomePage = () => {
 
         @media (max-width: 640px) {
           .hero-title { font-size: 2.8rem; }
-          .stats-container { grid-template-columns: 1fr; gap: 40px; }
+          .stats-container-compact { gap: 8px; padding: 16px 0; }
         }
       `}</style>
     </div>
