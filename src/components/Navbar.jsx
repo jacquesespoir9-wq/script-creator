@@ -6,39 +6,97 @@ const Navbar = () => {
   const location = useLocation();
 
   const navLinks = [
-    { path: '/', label: 'Design', icon: <LayoutGrid size={16} /> },
-    { path: '/motivation', label: 'Motivation', icon: <Zap size={16} /> },
-    { path: '/copywriter', label: 'Copy', icon: <PenTool size={16} /> },
-    { path: '/description', label: 'Desc', icon: <MessageSquare size={16} /> },
+    { path: '/', label: 'Design', icon: <LayoutGrid size={20} /> },
+    { path: '/motivation', label: 'Motivation', icon: <Zap size={20} /> },
+    { path: '/copy', label: 'Copy', icon: <PenTool size={20} /> },
+    { path: '/desc', label: 'Desc', icon: <MessageSquare size={20} /> },
   ];
 
   return (
-    <div className="relative z-10 w-full max-w-2xl mx-auto px-6 mb-12">
-      <div className="glass-panel rounded-full px-2 py-2 flex items-center justify-center gap-1 border-white/10">
+    <>
+      <style>{`
+        .bottom-nav-mobile {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          height: 72px;
+          background: rgba(18, 18, 24, 0.85);
+          backdrop-filter: blur(30px);
+          -webkit-backdrop-filter: blur(30px);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          padding: 0 10px;
+          z-index: 1000;
+          box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+        }
+        .nav-item-mobile {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          flex: 1;
+          height: 100%;
+          color: #666;
+          transition: all 0.2s ease;
+        }
+        .nav-item-mobile.active {
+          color: #C8FF57;
+        }
+        .label-mobile {
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        @media (min-width: 769px) {
+          .bottom-nav-mobile {
+            position: relative;
+            bottom: auto;
+            background: transparent;
+            backdrop-filter: none;
+            border-top: none;
+            box-shadow: none;
+            height: auto;
+            margin-bottom: 40px;
+          }
+           .nav-item-mobile {
+             flex: none;
+             padding: 10px 24px;
+             background: rgba(255,255,255,0.05);
+             border-radius: 50px;
+             flex-direction: row;
+             gap: 10px;
+             margin: 0 5px;
+           }
+           .nav-item-mobile.active {
+             background: #C8FF57;
+             color: #0D0D0F;
+           }
+        }
+      `}</style>
+      
+      <div className="bottom-nav-mobile">
         {navLinks.map((link) => {
           const isActive = location.pathname === link.path;
           return (
             <Link
               key={link.path}
               to={link.path}
-              className={`relative flex items-center gap-2 px-4 py-2.5 rounded-full transition-all duration-300 whitespace-nowrap ${
-                isActive 
-                ? 'bg-[#C8FF57] text-[#0D0D0F] shadow-[0_10px_20px_rgba(200,255,87,0.2)]' 
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`nav-item-mobile ${isActive ? 'active' : ''}`}
             >
-              <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'scale-100'}`}>
+              <div className={isActive ? 'scale-110' : ''}>
                 {link.icon}
               </div>
-              
-              <span className="text-[11px] font-bold uppercase tracking-wider">
-                {link.label}
-              </span>
+              <span className="label-mobile">{link.label}</span>
             </Link>
           );
         })}
       </div>
-    </div>
+    </>
   );
 };
 
