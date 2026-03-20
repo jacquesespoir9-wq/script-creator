@@ -59,7 +59,7 @@ const HomePage = () => {
         className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-20 md:pt-32 pb-32 md:pb-48"
       >
         {/* Hero Section */}
-        <div className="flex flex-col items-center text-center mb-24 md:mb-40">
+        <div className="flex flex-col items-center text-center mb-16 md:mb-24">
           <motion.div variants={itemVariants} className="mb-8 md:mb-12">
             <div className="liquid-badge">
               <Crown size={12} className="text-[#C8FF57] md:w-3.5 md:h-3.5" />
@@ -86,7 +86,7 @@ const HomePage = () => {
           </motion.div>
         </div>
 
-        {/* Stats Engine - Compact & Single Line */}
+        {/* Stats Engine - Moved Above Features */}
         <motion.div variants={itemVariants} className="stats-container-compact mb-24 md:mb-40">
           {[
             { label: "Scripts Générés", value: "50K+" },
