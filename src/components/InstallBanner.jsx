@@ -21,10 +21,10 @@ const InstallBanner = () => {
       setIsVisible(true);
     }, 6000);
 
-    // Disparition après 10 secondes de visibilité (total 16s)
+    // Disparition automatique à 12 secondes (6s d'affichage)
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
-    }, 16000);
+    }, 12000);
 
     return () => {
       clearTimeout(showTimer);
