@@ -5,7 +5,7 @@ import { supabase } from '../integrations/supabase/client';
 import PlatformIcon from './PlatformIcon';
 import { Video, Image as ImageIcon } from 'lucide-react';
 
-const ScriptGenerator = ({ initialPlatformId }) => {
+const ScriptGenerator = ({ initialPlatformId, showImageUpload = true }) => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
   const [imageBase64, setImageBase64] = useState(null);
@@ -36,7 +36,7 @@ const ScriptGenerator = ({ initialPlatformId }) => {
 
   const generateScript = async () => {
     if (!imageBase64 && !ideaText.trim()) {
-      setError("Veuillez importer une image ou décrire votre idée.");
+      setError("Veuillez décrire votre idée.");
       return;
     }
     
@@ -181,21 +181,25 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
           <div className="glass-panel" style={{ borderRadius: 32, padding: 28 }}>
             <span style={{ fontSize: 11, fontWeight: 800, color: "#666", textTransform: "uppercase", display: "block", marginBottom: 16, textAlign: 'center' }}>1. Source de contenu</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-              <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
-              {!image ? (
-                <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
-                  <div style={{ border: "2px dashed rgba(255,255,255,0.08)", borderRadius: 20, padding: "32px 20px", textAlign: "center" }}>
-                    <div style={{ fontSize: 36, marginBottom: 12 }}>✨</div>
-                    <div style={{ fontSize: 14, fontWeight: 700 }}>Importer une image</div>
-                  </div>
-                </label>
-              ) : (
-                <div style={{ position: "relative", borderRadius: 20, overflow: "hidden" }}>
-                  <img src={image} alt="preview" style={{ width: "100%", height: 200, objectFit: "cover" }} />
-                  <button onClick={() => { setImage(null); setImageBase64(null); }} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", borderRadius: "50%", width: 32, height: 32, cursor: "pointer" }}>✕</button>
-                </div>
+              {showImageUpload && (
+                <>
+                  <input id="img-upload" type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => { if (e.target.files[0]) handleFile(e.target.files[0]); e.target.value = ""; }} />
+                  {!image ? (
+                    <label htmlFor="img-upload" style={{ display: "block", cursor: "pointer" }}>
+                      <div style={{ border: "2px dashed rgba(255,255,255,0.08)", borderRadius: 20, padding: "32px 20px", textAlign: "center" }}>
+                        <div style={{ fontSize: 36, marginBottom: 12 }}>✨</div>
+                        <div style={{ fontSize: 14, fontWeight: 700 }}>Importer une image</div>
+                      </div>
+                    </label>
+                  ) : (
+                    <div style={{ position: "relative", borderRadius: 20, overflow: "hidden" }}>
+                      <img src={image} alt="preview" style={{ width: "100%", height: 200, objectFit: "cover" }} />
+                      <button onClick={() => { setImage(null); setImageBase64(null); }} style={{ position: "absolute", top: 12, right: 12, background: "rgba(0,0,0,0.7)", border: "none", color: "#fff", borderRadius: "50%", width: 32, height: 32, cursor: "pointer" }}>✕</button>
+                    </div>
+                  )}
+                </>
               )}
-              <textarea className="text-area-custom" placeholder="Décrivez votre idée ou donnez du contexte..." rows={4} value={ideaText} onChange={(e) => setIdeaText(e.target.value)} />
+              <textarea className="text-area-custom" placeholder={showImageUpload ? "Décrivez votre idée ou donnez du contexte..." : "Décrivez votre idée d'histoire en détail..."} rows={showImageUpload ? 4 : 10} value={ideaText} onChange={(e) => setIdeaText(e.target.value)} />
             </div>
           </div>
 
@@ -276,7 +280,7 @@ Génère un contenu complet, structuré et prêt à l'emploi en français.`;
             <div style={{ height: '100%', display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.3 }}>
               <div style={{ fontSize: 80, marginBottom: 24 }}>{selectedPlatform.icon}</div>
               <h3 style={{ fontSize: 20, fontWeight: 800 }}>Mode {selectedPlatform?.label}</h3>
-              <p style={{ fontSize: 14, textAlign: "center" }}>Chargez une image ou écrivez votre idée pour commencer.</p>
+              <p style={{ fontSize: 14, textAlign: "center" }}>{showImageUpload ? "Chargez une image ou écrivez votre idée pour commencer." : "Décrivez votre idée d'histoire pour commencer."}</p>
             </div>
           )}
 

@@ -12,7 +12,7 @@ const StoryPage = () => {
           Transformez vos idées les plus folles en récits captivants grâce à la puissance de l'IA.
         </p>
       </div>
-      <ScriptGenerator initialPlatformId="story" />
+      <ScriptGenerator initialPlatformId="story" showImageUpload={false} />
     </div>
   );
 };
