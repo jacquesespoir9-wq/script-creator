@@ -9,10 +9,10 @@ const DescriptionPage = () => {
         <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-6 text-white border border-white/10">
           <MessageSquare size={32} />
         </div>
-        <h1 className="font-outfit text-4xl md:text-5xl font-extrabold mb-4">
+        <h1 className="font-outfit text-5xl md:text-7xl font-black tracking-tighter mb-4">
           Légendes & <span className="text-gray-400">Descriptions</span>
         </h1>
-        <p className="text-gray-400 max-w-lg mx-auto px-6">
+        <p className="text-gray-400 max-w-lg mx-auto px-6 font-medium">
           Optimisez vos publications avec des descriptions engageantes et des hashtags pertinents.
         </p>
       </div>

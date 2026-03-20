@@ -42,8 +42,10 @@ const HistoryPage = () => {
     <div className="max-w-4xl mx-auto px-6 py-12">
       <BackButton />
       <div className="text-center mb-12 slide-up">
-        <h1 className="text-4xl font-bold mb-4 font-outfit">Historique des <span className="text-[#C8FF57]">Scripts</span></h1>
-        <p className="text-gray-400">Retrouvez toutes vos créations passées.</p>
+        <h1 className="text-5xl md:text-7xl font-black mb-4 font-outfit tracking-tighter">
+          Historique des <span className="text-[#C8FF57] drop-shadow-[0_0_30px_rgba(200,255,87,0.3)]">Scripts</span>
+        </h1>
+        <p className="text-gray-400 font-medium">Retrouvez toutes vos créations passées.</p>
       </div>
 
       {loading ? (
