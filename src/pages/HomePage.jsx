@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 import { Sparkles, Zap, Target, Cpu, Crown, ArrowRight, ShieldCheck, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
