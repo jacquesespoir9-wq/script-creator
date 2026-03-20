@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PLATFORMS, DURATIONS, TONES } from '../constants';
 import { supabase } from '../integrations/supabase/client';
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import PlatformIcon from './PlatformIcon';
 
 const ScriptGenerator = ({ initialPlatformId }) => {
@@ -39,9 +38,9 @@ const ScriptGenerator = ({ initialPlatformId }) => {
       return;
     }
     
-    const API_KEY = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
+    const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
     if (!API_KEY) {
-      setError("ERREUR : Clé API Google Gemini non configurée.");
+      setError("ERREUR : Clé API OpenRouter non configurée dans les variables d'environnement.");
       return;
     }
 
@@ -54,13 +53,13 @@ const ScriptGenerator = ({ initialPlatformId }) => {
 
     let specializedPrompt = "";
     if (platform === 'design') {
-      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'image et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées (calques, effets, outils), et un Appel à l'action.`;
+      specializedPrompt = `Tu es un expert en Design Graphique. Analyse l'idée et crée un script tutoriel étape par étape pour reproduire ce design. Structure le script avec une Accroche virale, le Matériel/Logiciels requis, les Étapes détaillées (calques, effets, outils), et un Appel à l'action.`;
     } else if (platform === 'motivation') {
-      specializedPrompt = `Tu es un coach en Motivation. Analyse l'image et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle, des silences marqués et termine par un message fort pour transformer la vie de l'audience.`;
+      specializedPrompt = `Tu es un coach en Motivation. Analyse l'idée et crée un script inspirant et puissant. Utilise des phrases percutantes, une narration émotionnelle, des silences marqués et termine par un message fort pour transformer la vie de l'audience.`;
     } else if (platform === 'copy') {
-      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'image et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action). Optimise le texte pour captiver immédiatement et convertir le lecteur en client.`;
+      specializedPrompt = `Tu es un expert en Copywriting. Analyse l'idée et crée un texte de vente persuasif utilisant la méthode AIDA (Attention, Intérêt, Désir, Action). Optimise le texte pour captiver immédiatement et convertir le lecteur en client.`;
     } else if (platform === 'desc') {
-      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'image et crée une description optimisée pour Instagram/TikTok/YouTube. Inclus une légende captivante, des hashtags stratégiques et un appel à l'action clair pour maximiser l'engagement.`;
+      specializedPrompt = `Tu es un Social Media Manager expert. Analyse l'idée et crée une description optimisée pour Instagram/TikTok/YouTube. Inclus une légende captivante, des hashtags stratégiques et un appel à l'action clair pour maximiser l'engagement.`;
     }
 
     const fullPrompt = `CATÉGORIE : ${platformInfo.label}
@@ -73,22 +72,45 @@ CONTEXTE UTILISATEUR : ${ideaText}
 Génère un script complet, structuré et prêt à l'emploi en français.`;
 
     try {
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const messages = [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: fullPrompt }
+          ]
+        }
+      ];
 
-      let contentParts = [fullPrompt];
       if (imageBase64) {
-        contentParts.push({
-          inlineData: {
-            data: imageBase64.data,
-            mimeType: imageBase64.type
+        messages[0].content.push({
+          type: "image_url",
+          image_url: {
+            url: `data:${imageBase64.type};base64,${imageBase64.data}`
           }
         });
       }
 
-      const result = await model.generateContent(contentParts);
-      const response = await result.response;
-      const text = response.text();
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${API_KEY}`,
+          "HTTP-Referer": window.location.origin,
+          "X-Title": "ScriptGen",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "model": "google/gemini-2.0-flash-001",
+          "messages": messages
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error.message || "Erreur API OpenRouter");
+      }
+
+      const text = data.choices[0].message.content;
       
       if (!text) throw new Error("Réponse vide de l'IA.");
       
